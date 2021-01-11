@@ -1,8 +1,6 @@
-# Genetic_Timetable
+# Cosas por hacer
 
-## Cosas por hacer
-
-### CÓDIGO
+## CÓDIGO
 
 - [X] Codificar restricciones
 - [ ] Codificar 
@@ -12,15 +10,12 @@
   - [ ] Mecanismo de selección de padres
   - [ ] Mecanismo de selección de supervivientes (reemplazamiento) 
     
-### DATOS
+## DATOS
 - [X] Definir las restricciones del problema
 - [ ] Crear dataset grande 
 - [ ] Crear dataset casos especiales
 - [ ] Proponer modificación del algoritmo (nuevo operador de mutación o
-  recombinación, nueva estrategia de selección de individuos, etc.) Ideas:
-  * Añadir lista de asignaturas optativas.
-  * Añadir estudiantes y posibilidad de cambio de grupo.
-  * Añadir clases especiales/avanzadas con asignaturas troncales
-  con las clases normales.
-### DOCUMENTACIÓN
+  recombinación, nueva estrategia de selección de individuos, etc.)
+  
+## DOCUMENTACIÓN
 - [ ] Hacer memoria  
