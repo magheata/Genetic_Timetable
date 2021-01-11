@@ -14,7 +14,7 @@
     
 ### DATOS
 - [X] Definir las restricciones del problema
-- [ ] Crear dataset grande 
+- [X] Crear dataset grande 
 - [ ] Crear dataset casos especiales
 - [ ] Proponer modificación del algoritmo (nuevo operador de mutación o
   recombinación, nueva estrategia de selección de individuos, etc.) Ideas:
