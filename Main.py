@@ -1,10 +1,4 @@
-# This is a sample Python script.
-
-# Press ⇧F10 to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 from Infrastructure.Loader import Loader
-from Infrastructure.Reader import Reader
-import os
 import pprint
 
 
@@ -15,6 +9,6 @@ if __name__ == '__main__':
     teachers = loader.load_teachers(week_days, hours_per_day)
     classes = loader.load_classes(teachers)
     courses = loader.load_courses(classes)
-    print(pprint.pformat(courses))
+    print(pprint.pformat(courses['2BATX']))
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
