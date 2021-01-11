@@ -1,10 +1,11 @@
 import pandas as pd
 
+import Constants
+
 
 class Reader:
 
     @staticmethod
-    def read_excel_sheet(excel_name, sheet_name):
-        data = pd.read_excel(open(excel_name, 'rb'),
+    def read_excel_sheet(sheet_name):
+        return pd.read_excel(open(Constants.FILE_EXCEL_DATA, 'rb'),
                              sheet_name=sheet_name)
-        print(data)
