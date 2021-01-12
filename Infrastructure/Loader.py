@@ -11,7 +11,7 @@ class Loader:
     def __init__(self):
         self._reader = Reader()
 
-    def load_sheet(self, sheet_name):
+    def load_sheet(self, sheet_name: str):
         return self._reader.read_excel_sheet(sheet_name)
 
     def load_timetable_info(self):
@@ -20,15 +20,19 @@ class Loader:
         hours_per_day = None
         start_time = None
         end_time = None
+        courses = None
         for index, row in info_sheet.iterrows():
             if not pd.isna(row['Días']):
                 week_days = int(row['Días'])
                 hours_per_day = int(row['Horas/día'])
                 start_time = int(row['Hora inicio'])
                 end_time = int(row['Hora fin'])
-        return week_days, hours_per_day, start_time, end_time
+                courses = row['Cursos'].split(',')
+                strip_list = [course.strip() for course in courses]
+                courses = strip_list
+        return courses, week_days, hours_per_day, start_time, end_time
 
-    def load_teachers(self, week_days, hours_per_day):
+    def load_teachers(self, week_days: list, hours_per_day: int):
         teacher_sheet = self._reader.read_excel_sheet(Constants.SHEET_TEACHER_INFO)
         teachers = {}
         for index, row in teacher_sheet.iterrows():
@@ -51,7 +55,7 @@ class Loader:
                                                  hours_per_week=total_hours_week)
         return teachers
 
-    def load_courses(self, classes):
+    def load_courses(self, classes: dict):
         courses_sheet = self._reader.read_excel_sheet(Constants.SHEET_COURSE_HOURS_INFO)
         courses = {}
         for index, row in courses_sheet.iterrows():
@@ -74,7 +78,7 @@ class Loader:
                 courses[row['Curso']].list_classes.append(class_)
         return courses
 
-    def load_classes(self, teachers):
+    def load_classes(self, teachers: dict):
         class_sheet = self._reader.read_excel_sheet(Constants.SHEET_CLASS_TEACHERS_INFO)
         classes = {}
         for index, row in class_sheet.iterrows():

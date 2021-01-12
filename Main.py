@@ -11,7 +11,9 @@ if __name__ == '__main__':
     # Load timetable information (total days with classes,
     # hours per day, first hour of class day, las hour of
     # class day)
-    class_days, hours_per_day, start_time, end_time = loader.load_timetable_info()
+    courses, class_days, hours_per_day, start_time, end_time = loader.load_timetable_info()
+    if Constants.COURSES != courses:
+        Constants.COURSES = courses
     if Constants.HOURS_PER_DAY != hours_per_day:
         Constants.HOURS_PER_DAY = hours_per_day
     if Constants.DAYS_PER_WEEK != class_days:
@@ -31,7 +33,7 @@ if __name__ == '__main__':
     courses = loader.load_courses(classes)
 
     geneticAlgorithm = GeneticAlgorithm(courses, classes, teachers)
-    solution = geneticAlgorithm.find_solution()[:'1ESO']
+    solution = geneticAlgorithm.find_solution()
     #print(solution)
-    print(TimeTable(solution, '1ESO'))
+    #print(TimeTable(solution, '1ESO'))
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

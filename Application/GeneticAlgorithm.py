@@ -1,11 +1,11 @@
 import Constants
 from Application.Chromosome import Chromosome
-from Application.CostCalculator import CostCalculator
+from Application.Fitness import Fitness
 
 
 class GeneticAlgorithm:
 
-    def __init__(self, courses, classes, teachers):
+    def __init__(self, courses: dict, classes: dict, teachers: dict):
         self.courses = courses
         self.classes = classes
         self.teachers = teachers
@@ -13,7 +13,7 @@ class GeneticAlgorithm:
         self.mutation = 0.95
         self.percentage_of_improvement = 0.3
         self.improvement = 0
-        self.costCalculator = CostCalculator()
+        self.fitness = Fitness()
 
     def find_solution(self):
         chromosomes = []
@@ -27,8 +27,9 @@ class GeneticAlgorithm:
         # EVALUATE EACH CANDIDATE
 
         for chromosome in chromosomes:
-            chromosome.cost = self.costCalculator
-        # REPEAT UNTIL CONDITION IS MET
+            chromosome.cost = self.fitness.calculate_fitness(chromosome)
+            print(f"{chromosome.cost}\n")
+        #REPEAT UNTIL CONDITION IS MET
         generations = 0
         while self.improvement < 0 and generations <= Constants.MAXIMUM_GENERATIONS:
             # SELECT PARENTS

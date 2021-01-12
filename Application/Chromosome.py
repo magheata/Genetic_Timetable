@@ -10,7 +10,7 @@ from Domain.Class import Lesson
 
 class Chromosome:
 
-    def __init__(self, courses, teachers, classes):
+    def __init__(self, courses: dict, teachers: dict, classes: dict):
         self.courses = courses
         self.teachers = teachers
         self.classes = classes
@@ -35,7 +35,8 @@ class Chromosome:
                     teacher.availability[time_slot] = -2
                 else:
                     teacher.availability[time_slot] = 1
-                class_, _ = random.choice(list(self.classes.items()))
-                lesson = Lesson(teacher_name, class_, time_slot)
+                class_idx, _ = random.choice(list(self.classes.items()))
+                class_ = self.classes[class_idx]
+                lesson = Lesson(teacher, class_, time_slot)
                 self.timetable._set_value(course, time_slot, lesson)
         return self

@@ -1,9 +1,10 @@
 import Constants
+import pandas as pd
 
 
 class TimeTable:
 
-    def __init__(self, chromosome, course):
+    def __init__(self, chromosome: pd.DataFrame, course: str):
         self.chromosome = chromosome
         self.course = course
 
