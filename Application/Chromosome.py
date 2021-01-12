@@ -10,10 +10,12 @@ from Domain.Class import Lesson
 
 class Chromosome:
 
-    def __init__(self, courses: dict, teachers: dict, classes: dict):
+    def __init__(self, courses: dict, teachers: dict, classes: dict, generation: int, idx: int):
         self.courses = courses
         self.teachers = teachers
         self.classes = classes
+        self.generation = generation
+        self.idx = idx
         self.timetable = pd.DataFrame(
             np.zeros((
                 len(courses),
@@ -28,15 +30,15 @@ class Chromosome:
             slots_to_complete_idx = random.sample(range(total_slots), total_slots_to_complete)
             for time_slot in slots_to_complete_idx:
                 teacher_name, _ = random.choice(list(self.teachers.items()))
-                teacher = self.teachers[teacher_name]
                 # If we assign the teacher to an unavailable time_slot
                 # show it
-                if teacher.availability[time_slot] == -1:
-                    teacher.availability[time_slot] = -2
+                if self.teachers[teacher_name].availability[time_slot] == -1:
+                    self.teachers[teacher_name].availability[time_slot] = -2
                 else:
-                    teacher.availability[time_slot] = 1
+                    self.teachers[teacher_name].availability[time_slot] = 1
                 class_idx, _ = random.choice(list(self.classes.items()))
                 class_ = self.classes[class_idx]
-                lesson = Lesson(teacher, class_, time_slot)
+                lesson = Lesson(self.teachers[teacher_name], class_, time_slot)
+
                 self.timetable._set_value(course, time_slot, lesson)
         return self

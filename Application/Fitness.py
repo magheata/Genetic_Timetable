@@ -11,13 +11,14 @@ class Fitness:
                 self.hard_constraint_4(individual) + self.hard_constraint_6(individual) +
                 self.hard_constraint_7(individual))
 
-    @staticmethod
-    def hard_constraint_1(individual: Chromosome):
+    # region HARD CONSTRAINTS
+    def hard_constraint_1(self, individual: Chromosome):
         """
         H1: Una asignatura sólo la puede impartir el profesor asignado.
+        :param individual:
+        :return:
         """
         n_penalties = 0
-        total_teachers_checked = 0
         t_slots = np.shape(individual.timetable)[1]
         # Recorrido del cromosoma para encontrar posibles discrepancias entre profesor
         # asignado a asignatura y asignatura con profesor diferente
@@ -32,14 +33,14 @@ class Fitness:
                     # que toca en ese slot horario
                     if teacher_name not in class_.list_teachers:
                         n_penalties = n_penalties + 1
-                    total_teachers_checked = total_teachers_checked + 1
         print(f"H1 cost: {n_penalties}")
         return n_penalties
 
-    @staticmethod
-    def hard_constraint_3(individual: Chromosome):
+    def hard_constraint_3(self, individual: Chromosome):
         """
         H3: Un profesor no puede impartir más de una asignatura a la misma hora.
+        :param individual:
+        :return:
         """
         n_penalties = 0
         t_slots = np.shape(individual.timetable)[1]
@@ -57,10 +58,11 @@ class Fitness:
         print(f"H3 cost: {n_penalties}")
         return n_penalties
 
-    @staticmethod
-    def hard_constraint_4(individual: Chromosome):
+    def hard_constraint_4(self, individual: Chromosome):
         """
         H4: No se debe superar la duración semanal de cada asignatura.
+        :param individual:
+        :return:
         """
         penalty_hours = 0
         # Recorrido del cromosoma para encontrar posibles discrepancias entre horas
@@ -85,10 +87,11 @@ class Fitness:
         print(f"H4 cost: {penalty_hours}")
         return penalty_hours
 
-    @staticmethod
-    def hard_constraint_6(individual: Chromosome):
+    def hard_constraint_6(self, individual: Chromosome):
         """
         H6: Los profesores sólo pueden dar clase en sus disponibilidades horarias.
+        :param individual:
+        :return:
         """
         n_penalties = 0
         t_slots = np.shape(individual.timetable)[1]
@@ -100,15 +103,16 @@ class Fitness:
                 if lesson != 0:
                     teacher_name = individual.timetable[t][course].assigned_teacher
                     if individual.teachers[teacher_name.name].availability[t] == -2:
-                        #print(f"Teacher: {teacher_name.name}")
+                        # print(f"Teacher: {teacher_name.name}")
                         n_penalties = n_penalties + 1
         print(f"H6 cost: {n_penalties}")
         return n_penalties
 
-    @staticmethod
-    def hard_constraint_7(individual: Chromosome):
+    def hard_constraint_7(self, individual: Chromosome):
         """
         H7: Un grupo de alumnos sólo puede realizar las asignaturas que tiene asignadas
+        :param individual:
+        :return:
         """
         penalty_classes_not_assigned = 0
         penalty_not_in_course = 0
@@ -158,3 +162,118 @@ class Fitness:
         - H8: Un grupo de alumnos no puede superar el total de horas semanales 
             establecidas para las clases. Al haber solo 35 slots, ya viene implícito
     '''
+
+    # endregion
+
+    # region SOFT CONSTRAIINTS
+    def soft_constraint_2(self, individual: Chromosome):
+        """
+        S2: Un grupo de alumnos debe tener pocas “horas sueltas“ entre las asignaturas.
+        :param individual:
+        :return:
+        """
+        n_penalties = 0
+        t_slots = np.shape(individual.timetable)[1]
+        # Recorrido del cromosoma para encontrar posibles discrepancias entre profesor
+        # asignado a asignatura y asignatura con profesor diferente
+
+        for course in Constants.COURSES:
+            for t in range(t_slots):
+                lesson = individual.timetable[t][course]
+                if lesson == 0:
+                    n_penalties = n_penalties + 1
+        print(f"S2 cost: {n_penalties}")
+        return n_penalties
+
+    def soft_constraint_3(self, individual: Chromosome):
+        """
+        S3: Una asignatura no se debe impartir en días consecutivos.
+        :param individual:
+        :return:
+        """
+        n_penalties = 0
+        # We look at 2 days at a time (lunes martes, martes miércoles, miércoles jueves, jueves viernes)
+        for course in individual.courses:
+            # print(f"{course}")
+            classes = []
+            for day in range(1, Constants.DAYS_PER_WEEK):
+                # First idx of first day
+                start_idx = (day - 1) * 7
+                # Last idx of second day
+                end_idx = start_idx + (2 * Constants.HOURS_PER_DAY)
+                for day_tp in range(start_idx, end_idx):
+                    lesson = individual.timetable[day_tp][course]
+                    if lesson != 0:
+                        if lesson in classes:
+                            n_penalties = n_penalties + 1
+                        else:
+                            classes.append(lesson)
+                # print("____")
+        print(f"S3 cost: {n_penalties}")
+        return n_penalties
+
+    def soft_constraint_4(self, individual: Chromosome):
+        """
+        S4: Un grupo de clase no debe tener al mismo profesor en asignaturas diferentes en el mismo día.
+        :param individual:
+        :return:
+        """
+        n_penalties = 0
+        for course in individual.courses:
+            # print(f"{course}")
+            for day in range(1, Constants.DAYS_PER_WEEK + 1):
+                teachers = []
+                start_idx = (day - 1) * 7
+                for day_tp in range(start_idx, start_idx + Constants.HOURS_PER_DAY):
+                    print(day_tp)
+
+                # print("____")
+        print(f"S4 cost: {n_penalties}")
+        return n_penalties
+
+    def soft_constraint_5(self, individual: Chromosome):
+        """
+        S5: Las “horas sueltas“ de un grupo de alumnos se deben poner al final del día.
+        :param individual:
+        :return:
+        """
+        n_penalties = 0
+        for course in individual.courses:
+            #print(f"{course}")
+            lessons = [lesson for lesson in individual.timetable.loc[course]]
+            empty_lessons_idx = [i for i, x in enumerate(lessons) if x == 0]
+            for day in range(1, Constants.DAYS_PER_WEEK + 1):
+                first_period = (day - 1) * 7
+                last_period = (first_period + Constants.HOURS_PER_DAY) - 1
+                #print(f"First period: {first_period} Last period {last_period} First permitted empty period: {last_period - 1}")
+                number_empty_periods = sum(map(lambda x: first_period <= x < last_period - 1, empty_lessons_idx))
+                #print(number_empty_periods)
+                n_penalties = n_penalties + number_empty_periods
+                # print("____")
+            #print(f"Empty lessons idx: {empty_lessons_idx}")
+            #print("____")
+        print(f"S5 cost: {n_penalties}")
+        return n_penalties
+
+    def soft_constraint_6(self, individual: Chromosome):
+        """
+        S6: Los profesores deben tener el mínimo número de “horas sueltas“ durante el día.
+        :param individual:
+        :return:
+        """
+        n_penalties = 0
+        percentage = 25
+        for teacher in individual.teachers:
+            print(f"Teacher: {individual.teachers[teacher].name}")
+            print(list(individual.teachers[teacher].availability))
+            availability = list(individual.teachers[teacher].availability).count(0)
+            hours_per_week = individual.teachers[teacher].hours_per_week
+            max_free_periods = np.round((hours_per_week * percentage)/100)
+            #print(f"Teacher {individual.teachers[teacher].name} Availability: {availability}/{hours_per_week} Max free periods: {max_free_periods}")
+            if availability > max_free_periods:
+                n_penalties = n_penalties + 1
+        print(n_penalties)
+        print("________")
+
+        return n_penalties
+    # endregion

@@ -17,18 +17,24 @@ class GeneticAlgorithm:
 
     def find_solution(self):
         chromosomes = []
-
+        generation = 0
         # INITIALISE POPULATION WITH RANDOM CANDIDATE SOLUTION
         for i in range(0, self.population_size):
-            chromosome = Chromosome(self.courses,
-                                    self.teachers,
-                                    self.classes)
+            chromosome = Chromosome(self.courses.copy(),
+                                    self.teachers.copy(),
+                                    self.classes.copy(),
+                                    generation,
+                                    i)
             chromosomes.append(chromosome.generate())
+
         # EVALUATE EACH CANDIDATE
 
         for chromosome in chromosomes:
-            chromosome.cost = self.fitness.calculate_fitness(chromosome)
-            print(f"{chromosome.cost}\n")
+            print(f"Generation: {chromosome.generation} individual: {chromosome.idx}")
+            #chromosome.cost = self.fitness.calculate_fitness(chromosome)
+            chromosome.cost = self.fitness.soft_constraint_6(chromosome)
+            #print(f"{chromosome.cost}\n")
+
         #REPEAT UNTIL CONDITION IS MET
         generations = 0
         while self.improvement < 0 and generations <= Constants.MAXIMUM_GENERATIONS:
