@@ -27,9 +27,16 @@ class Lesson:
         self.class_ = class_
         self.time_slot = time_slot
 
+    def get_weekday(self):
+        return Constants.WEEK_DAYS[int(self.time_slot / Constants.HOURS_PER_DAY)]
+
+    def get_hour(self):
+        return Constants.HOUR_START_DAY + self.time_slot % Constants.HOURS_PER_DAY
+
     def __repr__(self):
-        return f"   Assigned Teacher: {self.assigned_teacher}\n" \
-               f"   Class: {self.class_}\n" \
-               f"   Time slot: {self.time_slot}\n" \
-               f"   Day: {Constants.WEEK_DAYS[int(self.time_slot / Constants.HOURS_PER_DAY)]}\n" \
-               f"   Hour: { Constants.HOUR_START_DAY + self.time_slot % Constants.HOURS_PER_DAY}"
+        return f"{self.class_}-{self.assigned_teacher}"
+        #return f"   Assigned Teacher: {self.assigned_teacher}\n" \
+        #       f"   Class: {self.class_}\n" \
+        #       f"   Time slot: {self.time_slot}\n" \
+        #       f"   Day: {Constants.WEEK_DAYS[int(self.time_slot / Constants.HOURS_PER_DAY)]}\n" \
+        #       f"   Hour: { Constants.HOUR_START_DAY + self.time_slot % Constants.HOURS_PER_DAY}"
