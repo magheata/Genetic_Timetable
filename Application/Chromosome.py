@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 import pandas as pd
 import random
@@ -17,12 +19,14 @@ class Chromosome:
                 len(courses),
                 Constants.HOURS_PER_DAY * Constants.DAYS_PER_WEEK), dtype=int),
             index=courses.keys())
-        self.cost = 10000000000000000
+        self.cost = sys.maxsize
 
     def generate(self):
         for course in self.courses:
             total_slots = len(self.timetable.columns)
-            for time_slot in range(0, total_slots):
+            total_slots_to_complete = random.randint(0, len(self.timetable.columns))
+            slots_to_complete_idx = random.sample(range(total_slots), total_slots_to_complete)
+            for time_slot in slots_to_complete_idx:
                 teacher_name, _ = random.choice(list(self.teachers.items()))
                 teacher = self.teachers[teacher_name]
                 # If we assign the teacher to an unavailable time_slot

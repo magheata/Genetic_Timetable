@@ -1,8 +1,7 @@
 import Constants
-from Application.Chromosome import Chromosome
 from Application.GeneticAlgorithm import GeneticAlgorithm
+from Application.TimeTable import TimeTable
 from Infrastructure.Loader import Loader
-import pprint
 
 
 # Press the green button in the gutter to run the script.
@@ -31,10 +30,8 @@ if __name__ == '__main__':
     # (hours per class in the given course)
     courses = loader.load_courses(classes)
 
-    #print(pprint.pformat(courses['2BATX']))
-
-    #chromosome = Chromosome(courses, teachers, class_days * hours_per_day)
-
     geneticAlgorithm = GeneticAlgorithm(courses, classes, teachers)
-    print(geneticAlgorithm.find_solution())
+    solution = geneticAlgorithm.find_solution()[:'1ESO']
+    #print(solution)
+    print(TimeTable(solution, '1ESO'))
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

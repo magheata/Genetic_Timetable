@@ -1,5 +1,6 @@
 import Constants
 from Application.Chromosome import Chromosome
+from Application.CostCalculator import CostCalculator
 
 
 class GeneticAlgorithm:
@@ -12,6 +13,7 @@ class GeneticAlgorithm:
         self.mutation = 0.95
         self.percentage_of_improvement = 0.3
         self.improvement = 0
+        self.costCalculator = CostCalculator()
 
     def find_solution(self):
         chromosomes = []
@@ -24,6 +26,8 @@ class GeneticAlgorithm:
             chromosomes.append(chromosome.generate())
         # EVALUATE EACH CANDIDATE
 
+        for chromosome in chromosomes:
+            chromosome.cost = self.costCalculator
         # REPEAT UNTIL CONDITION IS MET
         generations = 0
         while self.improvement < 0 and generations <= Constants.MAXIMUM_GENERATIONS:
