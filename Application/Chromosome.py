@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import random
 
 import Constants
 from Domain.Class import Lesson
@@ -18,5 +19,19 @@ class Chromosome:
             index=courses.keys())
         self.cost = 10000000000000000
 
-    def create(self):
+    def generate(self):
+        for course in self.courses:
+            total_slots = len(self.timetable.columns)
+            for time_slot in range(0, total_slots):
+                teacher_name, _ = random.choice(list(self.teachers.items()))
+                teacher = self.teachers[teacher_name]
+                # If we assign the teacher to an unavailable time_slot
+                # show it
+                if teacher.availability[time_slot] == -1:
+                    teacher.availability[time_slot] = -2
+                else:
+                    teacher.availability[time_slot] = 1
+                class_, _ = random.choice(list(self.classes.items()))
+                lesson = Lesson(teacher_name, class_, time_slot)
+                self.timetable._set_value(course, time_slot, lesson)
         return self

@@ -19,9 +19,9 @@ class GeneticAlgorithm:
         # INITIALISE POPULATION WITH RANDOM CANDIDATE SOLUTION
         for i in range(0, self.population_size):
             chromosome = Chromosome(self.courses,
-                                     self.teachers,
-                                     self.classes)
-            chromosomes.append(chromosome)
+                                    self.teachers,
+                                    self.classes)
+            chromosomes.append(chromosome.generate())
         # EVALUATE EACH CANDIDATE
 
         # REPEAT UNTIL CONDITION IS MET
@@ -39,4 +39,4 @@ class GeneticAlgorithm:
             i = 0
 
         # RETURN CHROMOSOME WITH LEAST COST
-        return chromosomes[0]
+        return chromosomes[0].timetable
