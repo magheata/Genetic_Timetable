@@ -1,7 +1,7 @@
 import Constants
 from Application.Chromosome import Chromosome
 from Application.Fitness import Fitness
-
+from copy import deepcopy
 
 class GeneticAlgorithm:
 
@@ -20,20 +20,19 @@ class GeneticAlgorithm:
         generation = 0
         # INITIALISE POPULATION WITH RANDOM CANDIDATE SOLUTION
         for i in range(0, self.population_size):
-            chromosome = Chromosome(self.courses.copy(),
-                                    self.teachers.copy(),
-                                    self.classes.copy(),
-                                    generation,
-                                    i)
-            chromosomes.append(chromosome.generate())
+            chromosome = Chromosome(generation, i)
+            random_chromosome = chromosome.generate(deepcopy(self.courses),
+                                                    deepcopy(self.teachers),
+                                                    deepcopy(self.classes))
+            chromosomes.append(random_chromosome)
 
         # EVALUATE EACH CANDIDATE
 
         for chromosome in chromosomes:
             print(f"Generation: {chromosome.generation} individual: {chromosome.idx}")
-            #chromosome.cost = self.fitness.calculate_fitness(chromosome)
-            chromosome.cost = self.fitness.soft_constraint_6(chromosome)
-            #print(f"{chromosome.cost}\n")
+            chromosome.cost = self.fitness.calculate_fitness(chromosome)
+            #chromosome.cost = self.fitness.soft_constraint_6(chromosome)
+            print(f"{chromosome.cost}\n")
 
         #REPEAT UNTIL CONDITION IS MET
         generations = 0

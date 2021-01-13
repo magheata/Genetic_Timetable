@@ -26,12 +26,12 @@ class Fitness:
             for course in Constants.COURSES:
                 lesson = individual.timetable[t][course]
                 if lesson != 0:
-                    teacher_name = individual.timetable[t][course].assigned_teacher.name
+                    teacher_name = individual.timetable[t][course].assigned_teacher
                     class_ = individual.timetable[t][course].class_
-                    # print(f"Assigned teacher: {teacher_name} Possible teachers: {[teacher.name for teacher in class_.list_teachers]}")
+                    #print(f"Assigned teacher: {teacher_name} Possible teachers: {[teacher for teacher in individual.classes[class_].list_teachers]}")
                     # Buscamos si en las asignaciones, coincide profesor y asignatura
                     # que toca en ese slot horario
-                    if teacher_name not in class_.list_teachers:
+                    if teacher_name not in individual.classes[class_].list_teachers:
                         n_penalties = n_penalties + 1
         print(f"H1 cost: {n_penalties}")
         return n_penalties
@@ -69,20 +69,20 @@ class Fitness:
         # de la asignatura y el máximo para cada curso
         assigned_classes = {}
         for course in individual.courses:
-            # print(f"\n{course}")
+            #print(f"\n{course}")
             course_classes_week = individual.timetable.loc[course]
             for course_class in course_classes_week:
                 lesson = course_class
                 if lesson != 0:
-                    if lesson.class_.class_name in assigned_classes:
-                        assigned_classes[lesson.class_.class_name] = assigned_classes[lesson.class_.class_name] + 1
+                    if lesson.class_ in assigned_classes:
+                        assigned_classes[lesson.class_] = assigned_classes[lesson.class_] + 1
                     else:
-                        assigned_classes[lesson.class_.class_name] = 1
+                        assigned_classes[lesson.class_] = 1
 
             for lesson in assigned_classes:
                 class_hours_assigned = assigned_classes[lesson]
                 class_maximum_hours_week = individual.classes[lesson].hours_per_week
-                # print(f"{lesson} Assigned: {class_hours_assigned} Max: {class_maximum_hours_week}")
+                #print(f"{lesson} Assigned: {class_hours_assigned} Max: {class_maximum_hours_week}")
                 penalty_hours = penalty_hours + np.abs(class_hours_assigned - class_maximum_hours_week)
         print(f"H4 cost: {penalty_hours}")
         return penalty_hours
@@ -102,8 +102,8 @@ class Fitness:
                 lesson = individual.timetable[t][course]
                 if lesson != 0:
                     teacher_name = individual.timetable[t][course].assigned_teacher
-                    if individual.teachers[teacher_name.name].availability[t] == -2:
-                        # print(f"Teacher: {teacher_name.name}")
+                    if individual.teachers[teacher_name].availability[t] == -2:
+                        #print(f"Teacher: {teacher_name}")
                         n_penalties = n_penalties + 1
         print(f"H6 cost: {n_penalties}")
         return n_penalties
@@ -125,15 +125,15 @@ class Fitness:
             for course_class in course_classes_week:
                 lesson = course_class
                 if lesson != 0:
-                    if lesson.class_.class_name in assigned_classes:
-                        assigned_classes[lesson.class_.class_name] = assigned_classes[lesson.class_.class_name] + 1
+                    if lesson.class_ in assigned_classes:
+                        assigned_classes[lesson.class_] = assigned_classes[lesson.class_] + 1
                     else:
-                        assigned_classes[lesson.class_.class_name] = 1
+                        assigned_classes[lesson.class_] = 1
 
             classes_of_course = [class_.class_name for class_ in individual.courses[course].list_classes]
             # Comprobar que todas las asignaturas del curso se han asignado
-            # print(f"{course} classes: {classes_of_course}")
-            # print(f"Assigned classes: {assigned_classes}")
+            #print(f"{course} classes: {classes_of_course}")
+            #print(f"Assigned classes: {assigned_classes}")
             list_classes_not_assigned = []
 
             classes_course = individual.courses[course].list_classes
@@ -141,7 +141,7 @@ class Fitness:
                 if class_course.class_name not in assigned_classes:
                     list_classes_not_assigned.append(class_course.class_name)
                     penalty_classes_not_assigned = penalty_classes_not_assigned + 1
-            # print(f"{course} classes not assigned: {list_classes_not_assigned}")
+            #print(f"{course} classes not assigned: {list_classes_not_assigned}")
 
             # Comprobar si hay asignaturas que no son del curso
 
@@ -151,7 +151,7 @@ class Fitness:
                     if class_ not in list_classes_not_in_course:
                         list_classes_not_in_course.append(class_)
                     penalty_not_in_course = penalty_not_in_course + 1
-            # print(f"classes not in {course}: {list_classes_not_in_course}\n")
+            #print(f"classes not in {course}: {list_classes_not_in_course}\n")
         print(f"H7 cost: {penalty_not_in_course + penalty_classes_not_assigned}")
         return penalty_not_in_course + penalty_classes_not_assigned
 
@@ -195,8 +195,8 @@ class Fitness:
         # We look at 2 days at a time (lunes martes, martes miércoles, miércoles jueves, jueves viernes)
         for course in individual.courses:
             # print(f"{course}")
-            classes = []
             for day in range(1, Constants.DAYS_PER_WEEK):
+                classes = []
                 # First idx of first day
                 start_idx = (day - 1) * 7
                 # Last idx of second day
@@ -204,11 +204,12 @@ class Fitness:
                 for day_tp in range(start_idx, end_idx):
                     lesson = individual.timetable[day_tp][course]
                     if lesson != 0:
-                        if lesson in classes:
+                        if lesson.class_ in classes:
                             n_penalties = n_penalties + 1
                         else:
-                            classes.append(lesson)
-                # print("____")
+                            classes.append(lesson.class_)
+                #print(classes)
+                #print("____")
         print(f"S3 cost: {n_penalties}")
         return n_penalties
 
@@ -249,7 +250,7 @@ class Fitness:
                 number_empty_periods = sum(map(lambda x: first_period <= x < last_period - 1, empty_lessons_idx))
                 #print(number_empty_periods)
                 n_penalties = n_penalties + number_empty_periods
-                # print("____")
+                #print("____")
             #print(f"Empty lessons idx: {empty_lessons_idx}")
             #print("____")
         print(f"S5 cost: {n_penalties}")
@@ -263,13 +264,12 @@ class Fitness:
         """
         n_penalties = 0
         percentage = 25
+
         for teacher in individual.teachers:
-            print(f"Teacher: {individual.teachers[teacher].name}")
-            print(list(individual.teachers[teacher].availability))
             availability = list(individual.teachers[teacher].availability).count(0)
             hours_per_week = individual.teachers[teacher].hours_per_week
             max_free_periods = np.round((hours_per_week * percentage)/100)
-            #print(f"Teacher {individual.teachers[teacher].name} Availability: {availability}/{hours_per_week} Max free periods: {max_free_periods}")
+            print(f"Teacher {individual.teachers[teacher].name} Availability: {availability}/{hours_per_week} Max free periods: {max_free_periods}")
             if availability > max_free_periods:
                 n_penalties = n_penalties + 1
         print(n_penalties)

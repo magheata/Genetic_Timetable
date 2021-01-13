@@ -4,7 +4,7 @@ from Domain.Course import Course
 from Domain.Teacher import Teacher
 from Infrastructure.Reader import Reader
 import pandas as pd
-
+from copy import deepcopy
 
 class Loader:
 
@@ -86,11 +86,11 @@ class Loader:
                 class_name = row['Asignatura'].strip()
                 list_teachers = []
                 if not pd.isna(row['Profesor 1']):
-                    list_teachers.append(teachers[row['Profesor 1'].strip()])
+                    list_teachers.append(teachers[row['Profesor 1'].strip()].name)
                 if not pd.isna(row['Profesor 2']):
-                    list_teachers.append(teachers[row['Profesor 2'].strip()])
+                    list_teachers.append(teachers[row['Profesor 2'].strip()].name)
                 if not pd.isna(row['Profesor 3']):
-                    list_teachers.append(teachers[row['Profesor 3'].strip()])
+                    list_teachers.append(teachers[row['Profesor 3'].strip()].name)
             classes[class_name] = Class(class_name=class_name,
                                         list_teachers=list_teachers)
         return classes
