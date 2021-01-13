@@ -263,17 +263,81 @@ class Fitness:
         :return:
         """
         n_penalties = 0
-        percentage = 25
+        percentage_free_time = 25
 
         for teacher in individual.teachers:
             availability = list(individual.teachers[teacher].availability).count(0)
             hours_per_week = individual.teachers[teacher].hours_per_week
-            max_free_periods = np.round((hours_per_week * percentage)/100)
-            print(f"Teacher {individual.teachers[teacher].name} Availability: {availability}/{hours_per_week} Max free periods: {max_free_periods}")
+            max_free_periods = np.round((hours_per_week * percentage_free_time)/100)
+            #print(f"Teacher {individual.teachers[teacher].name} Availability: {availability}/{hours_per_week} Max free periods: {max_free_periods}")
             if availability > max_free_periods:
                 n_penalties = n_penalties + 1
         print(n_penalties)
         print("________")
 
+        return n_penalties
+
+    def soft_constraint_7(self, individual: Chromosome):
+        """
+        S7: El total de “horas sueltas“ se deben distribuir uniformemente entre todos los profesores.
+        :param individual:
+        :return:
+        """
+        n_penalties = 0
+        percentage_free_time = 25
+
+        total_free_periods_week = 0
+
+        teachers_free_hours = {}
+
+        # Calculamos total de horas libres de todos los profes
+        for teacher in individual.teachers:
+            availability = list(individual.teachers[teacher].availability).count(0)
+            #print(f"Teacher: {teacher} free hours: {availability}")
+            teachers_free_hours[teacher] = availability
+            total_free_periods_week = total_free_periods_week + availability
+
+        print(total_free_periods_week)
+
+        for teacher in teachers_free_hours:
+            free_hours = teachers_free_hours[teacher]
+            hours_per_week = individual.teachers[teacher].hours_per_week
+            max_free_periods = np.round((hours_per_week * percentage_free_time) / 100)
+            print(f"Teacher {individual.teachers[teacher].name} Free hours/work hours: {free_hours}/{hours_per_week} Max free periods: {max_free_periods}")
+        print("________")
+
+        return n_penalties
+
+    def soft_constraint_8(self, individual: Chromosome):
+        """
+        S8: El total de “horas sueltas“ que tiene un profesor se deben distribuir
+         uniformemente entre los días que está disponible.
+        :param individual:
+        :return:
+        """
+        n_penalties = 0
+
+        # Calculamos total de horas libres de todos los profes
+        for teacher in individual.teachers:
+            availability_teacher = list(individual.teachers[teacher].availability)
+            free_hours = availability_teacher.count(0)
+            count_available_time_slots = sum(map(lambda x: x >= 0, availability_teacher))
+
+            available_days = np.round(count_available_time_slots / Constants.HOURS_PER_DAY)
+
+            free_hours_per_day = int(np.round(free_hours/available_days))
+
+            for day in range(1, Constants.DAYS_PER_WEEK + 1):
+                first_period = (day - 1) * 7
+                last_period = first_period + Constants.HOURS_PER_DAY
+                free_periods_in_day = 0
+                for time_period in range(first_period, last_period):
+                    if availability_teacher[time_period] == 0:
+                        free_periods_in_day = free_periods_in_day + 1
+                    if free_periods_in_day > free_hours_per_day:
+                        #print(f"Teacher: {teacher} Free periods in day: {free_periods_in_day}"
+                        #      f" Max free periods per day: {free_hours_per_day}")
+                        n_penalties = n_penalties + 1
+            #print("------")
         return n_penalties
     # endregion

@@ -30,8 +30,8 @@ class GeneticAlgorithm:
 
         for chromosome in chromosomes:
             print(f"Generation: {chromosome.generation} individual: {chromosome.idx}")
-            chromosome.cost = self.fitness.calculate_fitness(chromosome)
-            #chromosome.cost = self.fitness.soft_constraint_6(chromosome)
+            #chromosome.cost = self.fitness.calculate_fitness(chromosome)
+            chromosome.cost = self.fitness.soft_constraint_8(chromosome)
             print(f"{chromosome.cost}\n")
 
         #REPEAT UNTIL CONDITION IS MET
