@@ -12,41 +12,58 @@ from Domain.Class import Lesson
 
 class Chromosome:
 
-    def __init__(self, generation: int, idx: int):
-        self.courses = {}
-        self.teachers = {}
-        self.classes = {}
+    def __init__(self, courses: dict, classes: dict, teachers: dict, generation: int, idx: int):
         self.generation = generation
         self.idx = idx
         self.cost = sys.maxsize
         self.timetable = None
-
-    def generate(self, courses: dict, teachers: dict, classes: dict):
-
-        self.timetable = pd.DataFrame(
-            np.zeros((
-                len(courses),
-                Constants.HOURS_PER_DAY * Constants.DAYS_PER_WEEK), dtype=int),
-            index=courses.keys())
         self.courses = courses
         self.classes = classes
+        self.teachers = teachers
 
+    def generate_initial_individual(self):
+        self.timetable = pd.DataFrame(
+            np.zeros((
+                len(self.courses),
+                Constants.HOURS_PER_DAY * Constants.DAYS_PER_WEEK), dtype=int),
+            index=self.courses.keys())
+        #print("Before", self.teachers["Andreu F."].availability)
         for course in self.courses:
             total_slots = len(self.timetable.columns)
             total_slots_to_complete = random.randint(0, len(self.timetable.columns))
             slots_to_complete_idx = random.sample(range(total_slots), total_slots_to_complete)
             for time_slot in slots_to_complete_idx:
-                teacher_name, _ = random.choice(list(teachers.items()))
+                teacher_name, _ = random.choice(list(self.teachers.items()))
                 # If we assign the teacher to an unavailable time_slot
                 # show it
-                if teachers[teacher_name].availability[time_slot] < 0:
-                    teachers[teacher_name].availability[time_slot] = -2
+                if self.teachers[teacher_name].availability[time_slot] < 0:
+                    self.teachers[teacher_name].availability[time_slot] = -2
                 else:
-                    teachers[teacher_name].availability[time_slot] = 1
+                    self.teachers[teacher_name].availability[time_slot] = 1
                 class_idx, _ = random.choice(list(self.classes.items()))
                 class_ = self.classes[class_idx]
-                lesson = Lesson(teachers[teacher_name].name, class_.class_name, time_slot)
+                lesson = Lesson(self.teachers[teacher_name].name, class_.class_name, time_slot)
                 self.timetable._set_value(course, time_slot, lesson)
+        #print("After", self.teachers["Andreu F."].availability, "\n")
 
-        self.teachers = teachers
         return self
+
+    def calculate_teachers_availability(self):
+        old_availability = deepcopy(self.teachers["Andreu F."].availability)
+        print("Before", old_availability)
+        for course in self.courses:
+            total_slots = len(self.timetable.columns)
+            for time_slot in range(0, total_slots):
+                lesson = self.timetable[time_slot][course]
+                if lesson != 0:
+                    # Teacher not available in this assigned lesson
+                    if self.teachers[lesson.assigned_teacher].availability[time_slot] < 0:
+                        self.teachers[lesson.assigned_teacher].availability[time_slot] = -2
+                    else:
+                        # Teacher in class
+                        self.teachers[lesson.assigned_teacher].availability[time_slot] = 1
+
+        print("After", self.teachers["Andreu F."].availability, "\n")
+
+    def set_timetable(self, timetable):
+        self.timetable = timetable

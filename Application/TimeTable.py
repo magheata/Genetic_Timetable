@@ -4,14 +4,15 @@ import pandas as pd
 
 class TimeTable:
 
-    def __init__(self, chromosome: pd.DataFrame, course: str):
-        self.chromosome = chromosome
+    def __init__(self, timetable: pd.DataFrame, course: str):
+        self.timetable = timetable
         self.course = course
 
     def __repr__(self):
         res = ""
-        for column in self.chromosome:
-            lesson = self.chromosome[column].array[0]
+        selected_course_timetable = self.timetable[self.course, :]
+        for time_slot in self.timetable:
+            lesson = selected_course_timetable[time_slot]
             if lesson != 0:
                 class_ = lesson.class_
                 teacher = lesson.assigned_teacher
