@@ -35,5 +35,4 @@ if __name__ == '__main__':
     geneticAlgorithm = GeneticAlgorithm(courses, classes, teachers)
     solution = geneticAlgorithm.find_solution()
     #print(solution)
-    #print(TimeTable(solution, '1ESO'))
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
