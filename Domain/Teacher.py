@@ -2,7 +2,7 @@ import numpy as np
 
 
 class Teacher:
-    def __init__(self, name, availability, hours_per_week):
+    def __init__(self, name: str, availability: dict, hours_per_week: int):
         self.name = name
         self.aux_availability = availability
         self.availability = np.zeros(self.aux_availability['class_days'] *

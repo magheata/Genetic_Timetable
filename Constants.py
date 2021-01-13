@@ -5,6 +5,8 @@ SHEET_TEACHER_INFO = "teacher_hours"
 SHEET_CLASS_TEACHERS_INFO = "class_teachers"
 SHEET_COURSE_HOURS_INFO = "course_hours"
 
+COURSES = ['1ESO', '2ESO', '3ESO', '4ESO', '1BATX', '2BATX']
+
 DAYS_PER_WEEK = 5
 WEEK_DAYS = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES']
 
