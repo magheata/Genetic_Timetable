@@ -4,15 +4,15 @@ from Domain.Teacher import Teacher
 
 
 class Class:
-    def __init__(self, class_name: str, list_teachers: list):
+    def __init__(self, class_name: str, teacher: Teacher):
         self.class_name = class_name
-        self.list_teachers = list_teachers
+        self.teacher = teacher
         self.course = []
         self.hours_per_week = None
 
     def __repr__(self):
         return f"Class: {self.class_name}" \
-               f"   Teachers: {self.list_teachers}" \
+               f"   Teacher: {self.teacher}" \
                f"   Course: {self.course}" \
                f"   Hours/Week: {self.hours_per_week}\n"
 
