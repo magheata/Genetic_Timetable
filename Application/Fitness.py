@@ -7,15 +7,12 @@ import numpy as np
 class Fitness:
 
     def calculate_fitness(self, individual: Chromosome):
-        return (self.hard_constraint_3(individual) +
-                self.hard_constraint_6(individual) +
-                self.hard_constraint_7(individual) +
-                ## SOFT CONSTRAINTS
-                self.soft_constraint_2(individual) +
-                self.soft_constraint_3(individual) +
-                self.soft_constraint_5(individual) +
-                self.soft_constraint_6(individual) +
-                self.soft_constraint_8(individual))
+
+        return (self.hard_constraint_3(individual) + self.hard_constraint_6(individual) +
+                self.soft_constraint_2(individual) + self.soft_constraint_3(individual) +
+                self.soft_constraint_5(individual) + self.soft_constraint_6(individual) +
+                self.soft_constraint_8(individual)
+                )
 
     # region HARD CONSTRAINTS
 
@@ -27,9 +24,10 @@ class Fitness:
         """
         n_penalties = 0
         t_slots = np.shape(individual.timetable)[1]
+
         # Recorrido del cromosoma para encontrar posibles discrepancias entre profesor
         # asignado a asignatura y asignatura con profesor diferente
-        for t in range(t_slots):
+        for t in range(0, t_slots - 1):
             teachers = []
             for course in Constants.COURSES:
                 lesson = individual.timetable[t][course]
@@ -40,9 +38,11 @@ class Fitness:
                         diff = len(teachers) - len(teachers_unique)
                         n_penalties = n_penalties + diff
         individual.cost_constraints["H3"] = int(n_penalties * Constants.HCW)
-        # print(f"H3 cost: {int(n_penalties * Constants.HCW)}")
+        #print(f"H3 cost: {int(n_penalties * Constants.HCW)}")
+        #if n_penalties > 0:
+        #    return Constants.HCW
         return int(n_penalties * Constants.HCW)
-
+        #return 0
     '''
     def hard_constraint_4(self, individual: Chromosome):
         """
@@ -185,6 +185,9 @@ class Fitness:
         # print(f"S2 cost: {cost}")
         return cost
 
+        '''
+            Añadir una HC que sea no tener una misma clase en más de una hora en un día.
+        '''
     def soft_constraint_3(self, individual: Chromosome):
         """
         S3: Una asignatura no se debe impartir en días consecutivos.
