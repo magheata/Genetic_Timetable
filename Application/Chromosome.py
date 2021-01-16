@@ -33,10 +33,6 @@ class Chromosome:
             total_slots_to_complete = random.randint(0, len(self.timetable.columns))
             slots_to_complete_idx = random.sample(range(total_slots), total_slots_to_complete)
             for time_slot in slots_to_complete_idx:
-                # teacher_name, _ = random.choice(list(self.teachers.items()))
-                # If we assign the teacher to an unavailable time_slot
-                # show it
-
                 class_idx, _ = random.choice(list(self.classes.items()))
                 class_ = self.classes[class_idx]
                 teacher = class_.teacher
@@ -47,7 +43,6 @@ class Chromosome:
                 lesson = Lesson(teacher.name, class_.class_name, time_slot)
                 self.timetable._set_value(course, time_slot, lesson)
         #print("After", self.teachers["Andreu F."].availability, "\n")
-
         return self
 
     def calculate_teachers_availability(self):
