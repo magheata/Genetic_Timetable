@@ -19,7 +19,7 @@ class Fitness:
                 self.soft_constraint_6(individual) +
                 self.soft_constraint_8(individual))
 
-    # region HARD CONSTRAINTS
+    # region HARD CONSTRAINTS (BORRAR)
     def hard_constraint_1(self, individual: Chromosome):
         """
         H1: Una asignatura sólo la puede impartir el profesor asignado.
@@ -114,9 +114,10 @@ class Fitness:
                 lesson = individual.timetable[t][course]
                 if lesson != 0:
                     teacher_name = individual.timetable[t][course].assigned_teacher
-                    if individual.teachers[teacher_name].availability[t] == -2:
+                    teacher_availability = individual.teachers[teacher_name].availability[t]
+                    if teacher_availability < -1:
                         # print(f"Teacher: {teacher_name}")
-                        n_penalties = n_penalties + 1
+                        n_penalties = n_penalties + np.abs(teacher_availability)
         cost = int(n_penalties * Constants.HCW * (Constants.BASE ** n_penalties))
         #print(f"H6 cost: {cost}")
         return cost

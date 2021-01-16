@@ -6,6 +6,7 @@ from Infrastructure.Reader import Reader
 import pandas as pd
 from copy import deepcopy
 
+
 class Loader:
 
     def __init__(self):
@@ -84,13 +85,8 @@ class Loader:
         for index, row in class_sheet.iterrows():
             if not pd.isna(row['Asignatura']):
                 class_name = row['Asignatura'].strip()
-                list_teachers = []
                 if not pd.isna(row['Profesor 1']):
-                    list_teachers.append(teachers[row['Profesor 1'].strip()].name)
-                if not pd.isna(row['Profesor 2']):
-                    list_teachers.append(teachers[row['Profesor 2'].strip()].name)
-                if not pd.isna(row['Profesor 3']):
-                    list_teachers.append(teachers[row['Profesor 3'].strip()].name)
-            classes[class_name] = Class(class_name=class_name,
-                                        list_teachers=list_teachers)
+                    teacher = teachers[row['Profesor 1'].strip()]
+                    classes[class_name] = Class(class_name=class_name,
+                                                teacher=teacher)
         return classes
