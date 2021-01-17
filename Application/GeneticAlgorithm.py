@@ -65,13 +65,15 @@ class GeneticAlgorithm:
         # Hacer padres monógamos
         for offspring in range(0, int(Constants.TOTAL_PARENTS / 2)):
             parent1 = parent_options[random.randint(0, Constants.TOTAL_PARENTS - 1)]
+            if parent1 in parents:
+                parent1 = parent_options[random.randint(0, Constants.TOTAL_PARENTS - 1)]
             parent2 = parent_options[random.randint(0, Constants.TOTAL_PARENTS - 1)]
-            while parent1 == parent2:
+            while parent1 == parent2 and parent2 in parents:
                 parent2 = parent_options[random.randint(0, Constants.TOTAL_PARENTS - 1)]
-            if parent1 not in parents:
-                parents.append(parent1)
-            if parent2 not in parents:
-                parents.append(parent2)
+            #if parent1 not in parents:
+            parents.append(parent1)
+            #if parent2 not in parents:
+            parents.append(parent2)
             '''
             parent1 = parent_options[random.randint(0, len(parent_options) - 1)]
             parent2 = parent_options[random.randint(0, len(parent_options) - 1)]
@@ -97,13 +99,13 @@ class GeneticAlgorithm:
     def mutate_offsprings(self, individuals):
         #mutated_individuals = []
         for individual in individuals:
-
             mutation_probability = random.random()  # 0 - 1
             # Mutate individual
             if mutation_probability <= self.mutation:
-                course_to_mutate = random.sample(Constants.COURSES, 3)
-                total_mutations = random.randint(0, Constants.TIME_SLOTS - 1)
+                total_courses_to_mutate = random.randint(1, len(Constants.COURSES) - 1)
+                course_to_mutate = random.sample(Constants.COURSES, total_courses_to_mutate)
                 for course in course_to_mutate:
+                    total_mutations = random.randint(0, Constants.TIME_SLOTS - 1)
                     for mutation in range(0, total_mutations):
                         #course_to_mutate_timetable = individual.timetable.loc[course_to_mutate, :]
                         first_time_slot_to_mutate = random.randint(0, Constants.TIME_SLOTS - 1)
@@ -147,13 +149,24 @@ class GeneticAlgorithm:
                              sorted(cost_individuals.items(), key=lambda item: item[1])}
         return [individual for individual in sorted_generation]
 
+    def choose_next_generation(self, generation):
+        new_generation = []
+        for p in range(0, len(generation) - 1):#Constants.POPULATION_SIZE - 1):
+            if generation[p].cost != generation[p - 1].cost:
+                if len(new_generation) < Constants.POPULATION_SIZE:
+                    new_generation.append(generation[p])
+                else:
+                    break
+        print(len(new_generation))
+        return new_generation
+
     def find_solution(self):
         computed_generation = 0
         generated_individuals = self.generate_initial_population(computed_generation)
         computed_generation += 1
         generation = self.order_generation_by_cost(generated_individuals)
         # REPEAT UNTIL CONDITION IS MET
-        while computed_generation <= Constants.MAXIMUM_GENERATIONS and self.improvement > self.percentage_of_improvement:
+        while computed_generation <= Constants.MAXIMUM_GENERATIONS:# and self.improvement > self.percentage_of_improvement:
             print("______________________________")
             # Calculate the old generation's cost to be able to compare if we have improved in
             # the next generation
@@ -173,12 +186,16 @@ class GeneticAlgorithm:
                 individual.cost = self.fitness.calculate_fitness(individual)
                 # print(f"Cost: {individual.cost}\nConstraints cost: {individual.cost_constraints}\n")
             # SELECT NEXT GENERATION
-            generated_individuals = generated_individuals + parents
+            for parent in parents:
+                if parent not in generated_individuals:
+                    generated_individuals.append(parent)
+
             # Order the individuals of the generation by fitness cost
             new_generation = deepcopy(self.order_generation_by_cost(generated_individuals))
             print([individual.cost for individual in new_generation])
             generation = list(new_generation[i] for i in range(0, Constants.POPULATION_SIZE))
-            #generation = random.sample(new_generation, Constants.POPULATION_SIZE)
+            # generation = self.choose_next_generation(new_generation)
+            # generation = random.sample(new_generation, Constants.POPULATION_SIZE)
             fitness_generation = sum([individual.cost for individual in generation])
             print(
                 f"Best individual: {generation[0].cost} generation: {generation[0].generation} individual: {generation[0].idx} "

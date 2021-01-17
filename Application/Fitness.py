@@ -92,7 +92,7 @@ class Fitness:
             for course in Constants.COURSES:
                 lesson = individual.timetable[t][course]
                 if lesson != 0:
-                    teacher_name = individual.timetable[t][course].assigned_teacher
+                    teacher_name = lesson.assigned_teacher
                     teacher_availability = individual.teachers[teacher_name].availability[t]
                     if teacher_availability < -1:
                         n_penalties = n_penalties + np.abs(teacher_availability)
