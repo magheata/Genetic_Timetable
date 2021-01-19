@@ -5,6 +5,8 @@ from Infrastructure.Loader import Loader
 
 
 # Press the green button in the gutter to run the script.
+from Infrastructure.Writer import Writer
+
 if __name__ == '__main__':
     # Create Loader element to load the data from the Excel file
     loader = Loader()
@@ -32,25 +34,11 @@ if __name__ == '__main__':
     # (hours per class in the given course)
     courses = loader.load_courses(classes)
 
+
     geneticAlgorithm = GeneticAlgorithm(courses, classes, teachers)
     solution = geneticAlgorithm.find_solution()
-    print("1ESO")
-    print(TimeTable(solution, '1ESO'))
-    print("\n")
-    print("2ESO")
-    print(TimeTable(solution, '2ESO'))
-    print("\n")
-    print("3ESO")
-    print(TimeTable(solution, '3ESO'))
-    print("\n")
-    print("4ESO")
-    print(TimeTable(solution, '4ESO'))
-    print("\n")
-    print("1BATX")
-    print(TimeTable(solution, '1BATX'))
-    print("\n")
-    print("2BATX")
-    print(TimeTable(solution, '2BATX'))
+    writer = Writer()
+    writer.write_timetable(solution)
 
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
