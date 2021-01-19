@@ -1,4 +1,10 @@
-import numpy as np
+# -*- coding: utf-8 -*-
+# @Time    : 19/01/2021 21:49
+# @Author  : Miruna Andreea Gheata, Pablo González Maya, Mateu Jover Mulet
+# @Email   : miruna.gheata1@estudiant.uib.cat
+# @File    : Writer.py
+# @Software: PyCharm
+
 import xlwt
 from xlutils.copy import copy
 from xlrd import open_workbook
@@ -30,7 +36,7 @@ class Writer:
         else:
             wb = xlwt.Workbook(Constants.FILE_EXCEL_RESULTS)
 
-        ws = wb.add_sheet(f'Horario_{file_name}')
+        ws = wb.add_sheet(file_name)
 
         for column in timetable.columns:
             for idx in timetable.index:
@@ -56,7 +62,7 @@ class Writer:
         else:
             wb = xlwt.Workbook(Constants.FILE_EXCEL_EVOLUTION)
 
-        ws = wb.add_sheet(f'Horario_{file_name}')
+        ws = wb.add_sheet(file_name)
 
         row_aux = 0
         ws.write(row_aux, 0, "Best individual cost", style0)
