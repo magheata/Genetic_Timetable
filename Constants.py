@@ -1,5 +1,6 @@
 FILE_EXCEL_DATA = "data.xlsx"
 FILE_EXCEL_RESULTS = "resultados_horarios.xls"
+FILE_EXCEL_EVOLUTION = "evolucion_costes.xls"
 
 SHEET_INFO = "info"
 SHEET_TEACHER_INFO = "teacher_hours"
@@ -27,3 +28,5 @@ SCW = 5
 
 POPULATION_SIZE = 30
 DESCENDANTS = 10
+
+CONSTRAINTS = ["H1", "H5", "S1", "S2", "S3", "S4", "S5"]

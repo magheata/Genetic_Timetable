@@ -10,12 +10,6 @@ class Class:
         self.course = []
         self.hours_per_week = None
 
-    def __repr__(self):
-        return f"Class: {self.class_name}" \
-               f"   Teacher: {self.teacher}" \
-               f"   Course: {self.course}" \
-               f"   Hours/Week: {self.hours_per_week}\n"
-
     def set_class_course(self, course: Course):
         self.course.append(course)
 
@@ -30,15 +24,15 @@ class Lesson:
         self.time_slot = time_slot
 
     def get_weekday(self):
+        """
+
+        :return:
+        """
         return Constants.WEEK_DAYS[int(self.time_slot / Constants.HOURS_PER_DAY)]
 
     def get_hour(self):
-        return Constants.HOUR_START_DAY + self.time_slot % Constants.HOURS_PER_DAY
+        """
 
-    def __repr__(self):
-        return f"{self.class_}-{self.assigned_teacher}"
-        #return f"   Assigned Teacher: {self.assigned_teacher}\n" \
-        #       f"   Class: {self.class_}\n" \
-        #       f"   Time slot: {self.time_slot}\n" \
-        #       f"   Day: {Constants.WEEK_DAYS[int(self.time_slot / Constants.HOURS_PER_DAY)]}\n" \
-        #       f"   Hour: { Constants.HOUR_START_DAY + self.time_slot % Constants.HOURS_PER_DAY}"
+        :return:
+        """
+        return Constants.HOUR_START_DAY + self.time_slot % Constants.HOURS_PER_DAY

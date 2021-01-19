@@ -1,10 +1,8 @@
 import Constants
 from Application.GeneticAlgorithm import GeneticAlgorithm
-from Application.TimeTable import TimeTable
 from Infrastructure.Loader import Loader
+from datetime import datetime
 
-
-# Press the green button in the gutter to run the script.
 from Infrastructure.Writer import Writer
 
 if __name__ == '__main__':
@@ -34,11 +32,10 @@ if __name__ == '__main__':
     # (hours per class in the given course)
     courses = loader.load_courses(classes)
 
-
     geneticAlgorithm = GeneticAlgorithm(courses, classes, teachers)
-    solution = geneticAlgorithm.find_solution()
+    solution, cost_evolution, constraints_evolution, generation_cost_evolution = geneticAlgorithm.find_solution()
     writer = Writer()
-    writer.write_timetable(solution)
+    now = datetime.now()
 
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    writer.write_timetable(solution, now.strftime("%d_%m_%Y-%H_%M_%S"))
+    writer.write_evolution(cost_evolution, constraints_evolution, generation_cost_evolution, now.strftime("%d_%m_%Y-%H_%M_%S"))
