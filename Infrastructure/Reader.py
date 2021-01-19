@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+# @Time    : 19/01/2021 21:49
+# @Author  : Miruna Andreea Gheata, Pablo González Maya, Mateu Jover Mulet
+# @Email   : miruna.gheata1@estudiant.uib.cat
+# @File    : Reader.py
+# @Software: PyCharm
+
 import pandas as pd
 
 import Constants

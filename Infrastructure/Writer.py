@@ -1,4 +1,10 @@
-import numpy as np
+# -*- coding: utf-8 -*-
+# @Time    : 19/01/2021 21:49
+# @Author  : Miruna Andreea Gheata, Pablo González Maya, Mateu Jover Mulet
+# @Email   : miruna.gheata1@estudiant.uib.cat
+# @File    : Writer.py
+# @Software: PyCharm
+
 import xlwt
 from xlutils.copy import copy
 from xlrd import open_workbook
