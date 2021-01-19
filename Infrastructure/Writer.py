@@ -30,7 +30,7 @@ class Writer:
         else:
             wb = xlwt.Workbook(Constants.FILE_EXCEL_RESULTS)
 
-        ws = wb.add_sheet(f'Horario_{file_name}')
+        ws = wb.add_sheet(file_name)
 
         for column in timetable.columns:
             for idx in timetable.index:
@@ -56,7 +56,7 @@ class Writer:
         else:
             wb = xlwt.Workbook(Constants.FILE_EXCEL_EVOLUTION)
 
-        ws = wb.add_sheet(f'Horario_{file_name}')
+        ws = wb.add_sheet(file_name)
 
         row_aux = 0
         ws.write(row_aux, 0, "Best individual cost", style0)

@@ -33,9 +33,10 @@ if __name__ == '__main__':
     courses = loader.load_courses(classes)
 
     geneticAlgorithm = GeneticAlgorithm(courses, classes, teachers)
-    solution, cost_evolution, constraints_evolution, generation_cost_evolution = geneticAlgorithm.find_solution()
+    parent_selection_type = Constants.Parent_Selection_Type.TOURNAMENT
+    solution, cost_evolution, constraints_evolution, generation_cost_evolution = geneticAlgorithm.find_solution(parent_selection_type, True)
     writer = Writer()
     now = datetime.now()
 
-    writer.write_timetable(solution, now.strftime("%d_%m_%Y-%H_%M_%S"))
-    writer.write_evolution(cost_evolution, constraints_evolution, generation_cost_evolution, now.strftime("%d_%m_%Y-%H_%M_%S"))
+    writer.write_timetable(solution, f"{parent_selection_type.name}_{now.strftime('%d_%m_%Y-%H_%M_%S')}")
+    writer.write_evolution(cost_evolution, constraints_evolution, generation_cost_evolution, f"{parent_selection_type.name}_{now.strftime('%d_%m_%Y-%H_%M_%S')}")

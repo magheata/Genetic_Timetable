@@ -139,7 +139,7 @@ class GeneticAlgorithm:
         return new_generation
 
     @staticmethod
-    def choose_parents(generation, old_fitness):
+    def choose_parents_roulette(generation, old_fitness):
         list_percentages = []
         for individual in generation:
             percentage_ind = (old_fitness - individual.cost) / old_fitness
@@ -154,6 +154,17 @@ class GeneticAlgorithm:
                 parent_options.append(generation[idx[0]])
         return parent_options
 
+    def choose_parents_tournament(self, generation):
+        current_member = 0
+        parent_options = []
+        k = 5
+        while current_member != Constants.TOTAL_PARENTS:
+            random_individuals = random.sample(generation, k)
+            ordered_individuals = self.order_generation_by_cost(random_individuals)
+            parent_options.append(ordered_individuals[0])
+            current_member += 1
+        return parent_options
+
     @staticmethod
     def get_costs_generation(generation, best_individual_cost_evolution, best_individual_constraints_evolution,
                              generation_cost_evolution):
@@ -164,7 +175,7 @@ class GeneticAlgorithm:
             best_individual_constraints_evolution[constraint].append(generation[0].cost_constraints[constraint])
         return fitness_generation
 
-    def find_solution(self):
+    def find_solution(self, parent_selection_type="ROULETTE", use_random_individual=False):
         computed_generation = 0
         generated_individuals = self.generate_initial_population(computed_generation)
         computed_generation += 1
@@ -181,6 +192,11 @@ class GeneticAlgorithm:
             best_individual_constraints_evolution[constraint].append(generation[0].cost_constraints[constraint])
         # endregion
 
+        if use_random_individual:
+            generations_with_no_improvement = 0
+
+        add_random_individual = False
+        random_chromosome = None
         # REPEAT UNTIL CONDITION IS MET
         while computed_generation <= Constants.MAXIMUM_GENERATIONS:
             print("______________________________")
@@ -188,7 +204,19 @@ class GeneticAlgorithm:
             # the next generation
             old_fitness = sum([individual.cost for individual in generation])
             # SELECT PARENTS
-            parent_options = self.choose_parents(generation, old_fitness)
+            parent_options = []
+            if parent_selection_type == Constants.Parent_Selection_Type.ROULETTE:
+                parent_options = self.choose_parents_roulette(generation, old_fitness)
+            elif parent_selection_type == Constants.Parent_Selection_Type.TOURNAMENT:
+                parent_options = self.choose_parents_tournament(generation)
+            else:
+                break
+
+            if add_random_individual:
+                parent_options.pop()
+                parent_options.append(random_chromosome)
+                add_random_individual = False
+
             # RECOMBINE PARENTS TO GENERATE OFFSPRINGS
             generated_individuals, parents = self.generate_offsprings(parent_options, computed_generation)
             # MUTATE
@@ -213,7 +241,23 @@ class GeneticAlgorithm:
                 f"constraints: {generation[0].cost_constraints}\n"
                 f"Fitness generation: {fitness_generation}")
             self.improvement = (old_fitness - fitness_generation) / old_fitness
+
+            if use_random_individual:
+                if self.improvement == 0:
+                    generations_with_no_improvement += 1
+
+                if generations_with_no_improvement > 2:
+                    random_chromosome = Chromosome(deepcopy(self.courses),
+                                                   deepcopy(self.classes),
+                                                   deepcopy(self.teachers),
+                                                   computed_generation,
+                                                   -1)
+                    random_chromosome.generate_initial_individual()
+                    random_chromosome.cost = self.fitness.calculate_fitness(random_chromosome)
+                    generations_with_no_improvement = 0
+                    add_random_individual = True
             print(f"Improvement: {self.improvement}\n")
             computed_generation += 1
         # RETURN CHROMOSOME WITH LEAST COST
-        return generation[0], best_individual_cost_evolution, best_individual_constraints_evolution, generation_cost_evolution
+        return generation[
+                   0], best_individual_cost_evolution, best_individual_constraints_evolution, generation_cost_evolution

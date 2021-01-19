@@ -1,3 +1,5 @@
+import enum
+
 FILE_EXCEL_DATA = "data.xlsx"
 FILE_EXCEL_RESULTS = "resultados_horarios.xls"
 FILE_EXCEL_EVOLUTION = "evolucion_costes.xls"
@@ -18,7 +20,7 @@ HOUR_END_DAY = 15
 
 TIME_SLOTS = HOURS_PER_DAY * DAYS_PER_WEEK
 
-MAXIMUM_GENERATIONS = 1000
+MAXIMUM_GENERATIONS = 2
 TOTAL_PARENTS = 10
 
 BASE = 1.5
@@ -30,3 +32,8 @@ POPULATION_SIZE = 30
 DESCENDANTS = 10
 
 CONSTRAINTS = ["H1", "H5", "S1", "S2", "S3", "S4", "S5"]
+
+
+class Parent_Selection_Type(enum.Enum):
+    ROULETTE = 1,
+    TOURNAMENT = 2
