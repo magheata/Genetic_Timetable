@@ -222,4 +222,4 @@ class GeneticAlgorithm:
             print(f"Improvement: {self.improvement}\n")
             computed_generation += 1
         # RETURN CHROMOSOME WITH LEAST COST
-        return generation[0].timetable
+        return generation[0]
