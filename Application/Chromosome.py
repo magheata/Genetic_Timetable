@@ -23,18 +23,27 @@ class Chromosome:
         self.cost_constraints = {}
 
     def compute_teacher_availability(self, teacher, time_slot):
+        """
+
+        :param teacher:
+        :param time_slot:
+        :return:
+        """
         if self.teachers[teacher].availability[time_slot] < 0:
             self.teachers[teacher].availability[time_slot] -= 1
         else:
             self.teachers[teacher].availability[time_slot] = 1
 
     def generate_initial_individual(self):
+        """
+
+        :return:
+        """
         self.timetable = pd.DataFrame(
             np.zeros((
                 len(self.courses),
                 Constants.HOURS_PER_DAY * Constants.DAYS_PER_WEEK), dtype=int),
             index=self.courses.keys())
-        #print("Before", self.teachers["Andreu F."].availability)
         for course in self.courses:
             list_classes = deepcopy(self.courses[course].list_classes)
             total_assigned_classes = {}
@@ -58,11 +67,13 @@ class Chromosome:
                         lesson = Lesson(class_.teacher.name, class_.class_name, time_slot)
                         self.timetable._set_value(course, time_slot, lesson)
                         incorrect_class = False
-        #print("After", self.teachers["Andreu F."].availability, "\n")
         return self
 
     def calculate_teachers_availability(self):
-        # print("Before", deepcopy(self.teachers["Andreu F."].availability))
+        """
+
+        :return:
+        """
         for course in self.courses:
             total_slots = len(self.timetable.columns)
             for time_slot in range(0, total_slots):
@@ -70,8 +81,12 @@ class Chromosome:
                 # Teacher not available in this assigned lesson
                 if lesson != 0:
                     self.compute_teacher_availability(lesson.assigned_teacher, time_slot)
-        # print("After", self.teachers["Andreu F."].availability, "\n")
 
     def set_timetable(self, timetable):
+        """
+
+        :param timetable:
+        :return:
+        """
         self.timetable = timetable
 

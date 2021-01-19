@@ -16,6 +16,10 @@ class Loader:
         return self._reader.read_excel_sheet(sheet_name)
 
     def load_timetable_info(self):
+        """
+
+        :return:
+        """
         info_sheet = self._reader.read_excel_sheet(Constants.SHEET_INFO)
         week_days = None
         hours_per_day = None
@@ -34,6 +38,12 @@ class Loader:
         return courses, week_days, hours_per_day, start_time, end_time
 
     def load_teachers(self, week_days: list, hours_per_day: int):
+        """
+
+        :param week_days:
+        :param hours_per_day:
+        :return:
+        """
         teacher_sheet = self._reader.read_excel_sheet(Constants.SHEET_TEACHER_INFO)
         teachers = {}
         for index, row in teacher_sheet.iterrows():
@@ -57,6 +67,11 @@ class Loader:
         return teachers
 
     def load_courses(self, classes: dict):
+        """
+
+        :param classes:
+        :return:
+        """
         courses_sheet = self._reader.read_excel_sheet(Constants.SHEET_COURSE_HOURS_INFO)
         courses = {}
         for index, row in courses_sheet.iterrows():
@@ -80,6 +95,11 @@ class Loader:
         return courses
 
     def load_classes(self, teachers: dict):
+        """
+
+        :param teachers:
+        :return:
+        """
         class_sheet = self._reader.read_excel_sheet(Constants.SHEET_CLASS_TEACHERS_INFO)
         classes = {}
         for index, row in class_sheet.iterrows():

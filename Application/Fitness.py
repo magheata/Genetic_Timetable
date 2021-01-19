@@ -8,15 +8,16 @@ class Fitness:
 
     def calculate_fitness(self, individual: Chromosome):
 
-        return (self.hard_constraint_3(individual) + self.hard_constraint_6(individual) +
-                self.soft_constraint_2(individual) + self.soft_constraint_3(individual) +
-                self.soft_constraint_5(individual) + self.soft_constraint_6(individual) +
-                self.soft_constraint_8(individual)
+        return (self.hard_constraint_1(individual) + self.hard_constraint_5(individual) +
+                self.soft_constraint_1(individual) + self.soft_constraint_2(individual) +
+                self.soft_constraint_3(individual) + self.soft_constraint_4(individual) +
+                self.soft_constraint_5(individual)
                 )
 
     # region HARD CONSTRAINTS
 
-    def hard_constraint_3(self, individual: Chromosome):
+    @staticmethod
+    def hard_constraint_1(individual: Chromosome):
         """
         H3: Un profesor no puede impartir más de una asignatura a la misma hora.
         :param individual:
@@ -37,48 +38,15 @@ class Fitness:
                     if len(teachers) != len(teachers_unique):
                         diff = len(teachers) - len(teachers_unique)
                         n_penalties = n_penalties + diff
-        individual.cost_constraints["H3"] = int(n_penalties * Constants.HCW)
+        individual.cost_constraints["H1"] = int(n_penalties * Constants.HCW)
         #print(f"H3 cost: {int(n_penalties * Constants.HCW)}")
         #if n_penalties > 0:
         #    return Constants.HCW
         return int(n_penalties * Constants.HCW)
         #return 0
-    '''
-    def hard_constraint_4(self, individual: Chromosome):
-        """
-        H4: No se debe superar la duración semanal de cada asignatura.
-        :param individual:
-        :return:
-        """
-        penalty_hours = 0
-        # Recorrido del cromosoma para encontrar posibles discrepancias entre horas
-        # de la asignatura y el máximo para cada curso
-        assigned_classes = {}
-        for course in individual.courses:
-            # print(f"\n{course}")
-            course_classes_week = individual.timetable.loc[course]
-            for course_class in course_classes_week:
-                lesson = course_class
-                if lesson != 0:
-                    if lesson.class_ in assigned_classes:
-                        assigned_classes[lesson.class_] = assigned_classes[lesson.class_] + 1
-                    else:
-                        assigned_classes[lesson.class_] = 1
 
-            for lesson in assigned_classes:
-                class_hours_assigned = assigned_classes[lesson]
-                course_classes = individual.courses[course].list_classes[lesson]
-                class_maximum_hours_week = individual.courses[course].list_classes[lesson].hours_per_week
-                # print(f"{lesson} Assigned: {class_hours_assigned} Max: {class_maximum_hours_week}")
-                diff_hours = np.abs(class_hours_assigned - class_maximum_hours_week)
-                if diff_hours != 0:
-                    penalty_hours = penalty_hours + diff_hours
-        individual.cost_constraints["H4"] = int(penalty_hours * Constants.HCW)
-        # print(f"H4 cost: {int(penalty_hours * Constants.HCW)}")
-        return int(penalty_hours * Constants.HCW)
-        '''
-
-    def hard_constraint_6(self, individual: Chromosome):
+    @staticmethod
+    def hard_constraint_5(individual: Chromosome):
         """
         H6: Los profesores sólo pueden dar clase en sus disponibilidades horarias.
         :param individual:
@@ -97,58 +65,8 @@ class Fitness:
                     if teacher_availability < -1:
                         n_penalties = n_penalties + np.abs(teacher_availability)
         cost = int(n_penalties * Constants.HCW)
-        individual.cost_constraints["H6"] = cost
+        individual.cost_constraints["H5"] = cost
         # print(f"H6 cost: {cost}")
-        return cost
-
-    def hard_constraint_7(self, individual: Chromosome):
-        """
-        H7: Un grupo de alumnos sólo puede realizar las asignaturas que tiene asignadas
-        :param individual:
-        :return:
-        """
-        penalty_classes_not_assigned = 0
-        penalty_not_in_course = 0
-
-        for course in individual.courses:
-            # Coger las clases asignadas para este curso
-            assigned_classes = {}
-
-            course_classes_week = individual.timetable.loc[course]
-            for course_class in course_classes_week:
-                lesson = course_class
-                if lesson != 0:
-                    if lesson.class_ in assigned_classes:
-                        assigned_classes[lesson.class_] = assigned_classes[lesson.class_] + 1
-                    else:
-                        assigned_classes[lesson.class_] = 1
-
-            classes_of_course = [class_.class_name for class_ in list(individual.courses[course].list_classes.values())]
-            # Comprobar que todas las asignaturas del curso se han asignado
-            # print(f"{course} classes: {classes_of_course}")
-            # print(f"Assigned classes: {assigned_classes}")
-            list_classes_not_assigned = []
-
-            classes_course = list(individual.courses[course].list_classes.values())
-            for class_course in classes_course:
-                if class_course.class_name not in assigned_classes:
-                    list_classes_not_assigned.append(class_course.class_name)
-                    penalty_classes_not_assigned = penalty_classes_not_assigned + 1
-            # print(f"{course} classes not assigned: {list_classes_not_assigned}")
-
-            # Comprobar si hay asignaturas que no son del curso
-
-            list_classes_not_in_course = []
-            for class_ in assigned_classes:
-                if class_ not in classes_of_course:
-                    if class_ not in list_classes_not_in_course:
-                        list_classes_not_in_course.append(class_)
-                    penalty_not_in_course = penalty_not_in_course + 1
-            # print(f"classes not in {course}: {list_classes_not_in_course}\n")
-        cost_classes = penalty_not_in_course + penalty_classes_not_assigned
-        cost = int(cost_classes * Constants.HCW)
-        individual.cost_constraints["H7"] = cost
-        # print(f"H7 cost: {cost}")
         return cost
 
     '''
@@ -157,6 +75,7 @@ class Fitness:
         - H2: Un grupo de alumnos no puede tener más de una asignatura a la misma hora.
         - H4
         - H5: Una asignatura sólo se puede realizar dentro del horario lectivo establecido.
+        - H7
         - H8: Un grupo de alumnos no puede superar el total de horas semanales 
             establecidas para las clases. Al haber solo 35 slots, ya viene implícito
     '''
@@ -164,7 +83,8 @@ class Fitness:
     # endregion
 
     # region SOFT CONSTRAIINTS
-    def soft_constraint_2(self, individual: Chromosome):
+    @staticmethod
+    def soft_constraint_1(individual: Chromosome):
         """
         S2: Un grupo de alumnos debe tener pocas “horas sueltas“ entre las asignaturas.
         :param individual:
@@ -181,14 +101,15 @@ class Fitness:
                 if lesson == 0:
                     n_penalties = n_penalties + 1
         cost = int(n_penalties * Constants.SCW)
-        individual.cost_constraints["S2"] = cost
-        # print(f"S2 cost: {cost}")
+        individual.cost_constraints["S1"] = cost
         return cost
 
         '''
             Añadir una HC que sea no tener una misma clase en más de una hora en un día.
         '''
-    def soft_constraint_3(self, individual: Chromosome):
+
+    @staticmethod
+    def soft_constraint_2(individual: Chromosome):
         """
         S3: Una asignatura no se debe impartir en días consecutivos.
         :param individual:
@@ -197,7 +118,6 @@ class Fitness:
         n_penalties = 0
         # We look at 2 days at a time (lunes martes, martes miércoles, miércoles jueves, jueves viernes)
         for course in individual.courses:
-            # print(f"{course}")
             for day in range(1, Constants.DAYS_PER_WEEK):
                 classes = []
                 # First idx of first day
@@ -211,14 +131,12 @@ class Fitness:
                             n_penalties = n_penalties + 1
                         else:
                             classes.append(lesson.class_)
-                # print(classes)
-                # print("____")
         cost = int(n_penalties * Constants.SCW)
-        individual.cost_constraints["S3"] = cost
-        # print(f"S3 cost: {cost}")
+        individual.cost_constraints["S2"] = cost
         return cost
 
-    def soft_constraint_5(self, individual: Chromosome):
+    @staticmethod
+    def soft_constraint_3(individual: Chromosome):
         """
         S5: Las “horas sueltas“ de un grupo de alumnos se deben poner al final del día.
         :param individual:
@@ -226,25 +144,19 @@ class Fitness:
         """
         n_penalties = 0
         for course in individual.courses:
-            # print(f"{course}")
             lessons = [lesson for lesson in individual.timetable.loc[course]]
             empty_lessons_idx = [i for i, x in enumerate(lessons) if x == 0]
             for day in range(1, Constants.DAYS_PER_WEEK + 1):
                 first_period = (day - 1) * 7
                 last_period = (first_period + Constants.HOURS_PER_DAY) - 1
-                # print(f"First period: {first_period} Last period {last_period} First permitted empty period: {last_period - 1}")
                 misassigned_empty_periods = sum(map(lambda x: first_period <= x < last_period - 1, empty_lessons_idx))
-                # print(number_empty_periods)
                 n_penalties = n_penalties + (misassigned_empty_periods * Constants.SCW)
-                # print("____")
-            # print(f"Empty lessons idx: {empty_lessons_idx}")
-            # print("____")
         cost = int(n_penalties * Constants.SCW)
-        individual.cost_constraints["S5"] = cost
-        # print(f"S5 cost: {cost}")
+        individual.cost_constraints["S3"] = cost
         return cost
 
-    def soft_constraint_6(self, individual: Chromosome):
+    @staticmethod
+    def soft_constraint_4(individual: Chromosome):
         """
         S6: Los profesores deben tener el mínimo número de “horas sueltas“ durante el día.
         :param individual:
@@ -257,17 +169,15 @@ class Fitness:
             availability = list(individual.teachers[teacher].availability).count(0)
             hours_per_week = individual.teachers[teacher].hours_per_week
             max_free_periods = np.round((hours_per_week * percentage_free_time) / 100)
-            # print(f"Teacher {individual.teachers[teacher].name} Availability: {availability}/{hours_per_week} Max free periods: {max_free_periods}")
             if availability > max_free_periods:
                 n_penalties = n_penalties + 1
-        # print(n_penalties)
 
         cost = int(n_penalties * Constants.SCW)
-        individual.cost_constraints["S6"] = cost
-        # print(f"S6 cost: {cost}")
+        individual.cost_constraints["S4"] = cost
         return cost
 
-    def soft_constraint_8(self, individual: Chromosome):
+    @staticmethod
+    def soft_constraint_5(individual: Chromosome):
         """
         S8: El total de “horas sueltas“ que tiene un profesor se deben distribuir
          uniformemente entre los días que está disponible.
@@ -294,13 +204,8 @@ class Fitness:
                     if availability_teacher[time_period] == 0:
                         free_periods_in_day = free_periods_in_day + 1
                     if free_periods_in_day > free_hours_per_day:
-                        # print(f"Teacher: {teacher} Free periods in day: {free_periods_in_day}"
-                        #      f" Max free periods per day: {free_hours_per_day}")
                         n_penalties = n_penalties + 1
-            # print("------")
-
         cost = int(n_penalties * Constants.SCW)
-        individual.cost_constraints["S8"] = cost
-        # print(f"S8 cost: {cost}")
+        individual.cost_constraints["S5"] = cost
         return cost
     # endregion
