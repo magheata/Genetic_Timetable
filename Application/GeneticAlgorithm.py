@@ -14,7 +14,7 @@ class GeneticAlgorithm:
         self.classes = classes
         self.teachers = teachers
         self.population_size = Constants.POPULATION_SIZE
-        self.mutation = 0.3
+        self.mutation = 0.15
         self.percentage_of_improvement = 0.0001
         self.improvement = 1
         self.fitness = Fitness()
@@ -105,7 +105,7 @@ class GeneticAlgorithm:
                 total_courses_to_mutate = random.randint(1, len(Constants.COURSES) - 1)
                 course_to_mutate = random.sample(Constants.COURSES, total_courses_to_mutate)
                 for course in course_to_mutate:
-                    total_mutations = random.randint(0, Constants.TIME_SLOTS - 1)
+                    total_mutations = random.randint(1, 3) # cambiar menos slots
                     for mutation in range(0, total_mutations):
                         #course_to_mutate_timetable = individual.timetable.loc[course_to_mutate, :]
                         first_time_slot_to_mutate = random.randint(0, Constants.TIME_SLOTS - 1)
@@ -160,6 +160,21 @@ class GeneticAlgorithm:
         print(len(new_generation))
         return new_generation
 
+    def choose_parents(self, generation, old_fitness):
+        list_percentages = []
+        for individual in generation:
+            percentage_ind = (old_fitness - individual.cost) / old_fitness
+            list_percentages.append(percentage_ind)
+        list_percentages = np.cumsum(list_percentages) / (Constants.POPULATION_SIZE - 1)
+
+        parent_options = []
+        for i in range(0, Constants.POPULATION_SIZE):
+            random_i = random.random()
+            idx_bigger_value = np.where(list_percentages > random_i)
+            for idx in idx_bigger_value:
+                parent_options.append(generation[idx[0]])
+        return parent_options
+
     def find_solution(self):
         computed_generation = 0
         generated_individuals = self.generate_initial_population(computed_generation)
@@ -172,8 +187,10 @@ class GeneticAlgorithm:
             # the next generation
             old_fitness = sum([individual.cost for individual in generation])
             # SELECT PARENTS
-            #parent_options = random.sample(generation, Constants.TOTAL_PARENTS)
-            parent_options = list(generation[i] for i in range(0, Constants.TOTAL_PARENTS))
+            # parent_options = random.sample(generation, Constants.TOTAL_PARENTS)
+
+            parent_options = self.choose_parents(generation, old_fitness)
+
             # RECOMBINE PARENTS TO GENERATE OFFSPRINGS
             generated_individuals, parents = self.generate_offsprings(parent_options, computed_generation)
             # MUTATE

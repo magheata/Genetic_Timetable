@@ -34,5 +34,23 @@ if __name__ == '__main__':
 
     geneticAlgorithm = GeneticAlgorithm(courses, classes, teachers)
     solution = geneticAlgorithm.find_solution()
-    #print(solution)
+    print("1ESO")
+    print(TimeTable(solution, '1ESO'))
+    print("\n")
+    print("2ESO")
+    print(TimeTable(solution, '2ESO'))
+    print("\n")
+    print("3ESO")
+    print(TimeTable(solution, '3ESO'))
+    print("\n")
+    print("4ESO")
+    print(TimeTable(solution, '4ESO'))
+    print("\n")
+    print("1BATX")
+    print(TimeTable(solution, '1BATX'))
+    print("\n")
+    print("2BATX")
+    print(TimeTable(solution, '2BATX'))
+
+
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
