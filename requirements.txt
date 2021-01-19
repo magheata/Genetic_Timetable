@@ -2,3 +2,5 @@ numpy
 pandas
 xlrd
 openpyxl
+xlwt
+xlutils

@@ -65,18 +65,18 @@ class Loader:
                 class_name = row['Asignatura'].strip()
                 class_hours_per_week = int(row['Total horas/clase semanales'])
                 course_hours_week = int(row['Horas semanales curso'])
-                class_ = classes[class_name]
+                class_ = deepcopy(classes[class_name])
                 class_.set_class_course(course_name)
                 class_.set_hours_per_week(class_hours_per_week)
                 courses[course_name] = Course(course_name, course_hours_week)
-                courses[course_name].list_classes.append(class_)
+                courses[course_name].list_classes[class_name] = class_
             elif row['Curso'] in courses:
                 class_name = row['Asignatura'].strip()
                 class_hours_per_week = int(row['Total horas/clase semanales'])
-                class_ = classes[class_name]
+                class_ = deepcopy(classes[class_name])
                 class_.set_class_course(row['Curso'].strip())
                 class_.set_hours_per_week(class_hours_per_week)
-                courses[row['Curso']].list_classes.append(class_)
+                courses[row['Curso']].list_classes[class_name] = class_
         return courses
 
     def load_classes(self, teachers: dict):

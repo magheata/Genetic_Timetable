@@ -10,9 +10,8 @@ class TimeTable:
 
     def __repr__(self):
         res = ""
-        selected_course_timetable = self.timetable[self.course, :]
-        for time_slot in self.timetable:
-            lesson = selected_course_timetable[time_slot]
+        selected_course_timetable = self.timetable.loc[self.course, :]
+        for _, lesson in selected_course_timetable.iteritems():
             if lesson != 0:
                 class_ = lesson.class_
                 teacher = lesson.assigned_teacher
