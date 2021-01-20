@@ -226,7 +226,7 @@ class Fitness:
         n_penalties = 0
         # Check all teachers
         for teacher in individual.teachers:
-            # Get teacher's availabiity
+            # Get teacher's availability
             availability_teacher = list(individual.teachers[teacher].availability)
             # Get the number of free periods this teacher has
             free_hours = availability_teacher.count(0)
