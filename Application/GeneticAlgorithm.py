@@ -304,14 +304,13 @@ class GeneticAlgorithm:
                     generated_individuals.append(parent)
             # Order the individuals of the generation by fitness cost
             new_generation = deepcopy(self.order_generation_by_cost(generated_individuals))
-            print([individual.cost for individual in new_generation])
             generation = list(new_generation[i] for i in range(0, Constants.POPULATION_SIZE))
             fitness_generation = self.get_costs_generation(generation,
                                                            best_individual_cost_evolution,
                                                            best_individual_constraints_evolution,
                                                            generation_cost_evolution)
             print(
-                f"Best individual: {generation[0].cost} generation: {generation[0].generation} individual: {generation[0].idx} "
+                f"Best individual: {generation[0].cost} generation: {generation[0].generation}/{Constants.MAXIMUM_GENERATIONS} individual: {generation[0].idx} "
                 f"constraints: {generation[0].cost_constraints}\n"
                 f"Fitness generation: {fitness_generation}")
             self.improvement = (old_fitness - fitness_generation) / old_fitness
@@ -330,7 +329,7 @@ class GeneticAlgorithm:
                     random_chromosome.cost = self.fitness.calculate_fitness(random_chromosome)
                     generations_with_no_improvement = 0
                     add_random_individual = True
-            print(f"Improvement: {self.improvement}\n")
+            print(f"Generation improvement: {self.improvement}\n")
             computed_generation += 1
         # RETURN CHROMOSOME WITH LEAST COST
         return generation[0], best_individual_cost_evolution, best_individual_constraints_evolution, generation_cost_evolution

@@ -4,11 +4,17 @@
 # @Email   : miruna.gheata1@estudiant.uib.cat
 # @File    : Main.py
 # @Software: PyCharm
+import Constants
+from Application.GeneticAlgorithm import GeneticAlgorithm
+from Infrastructure.Loader import Loader
+from datetime import datetime
 
 import Constants
 from Application.GeneticAlgorithm import GeneticAlgorithm
 from Infrastructure.Loader import Loader
 from datetime import datetime
+from Infrastructure.Writer import Writer
+from Infrastructure.Graphs import Graphs
 
 from Infrastructure.Writer import Writer
 
@@ -19,6 +25,7 @@ if __name__ == '__main__':
     # hours per day, first hour of class day, las hour of
     # class day)
     courses, class_days, hours_per_day, start_time, end_time = loader.load_timetable_info()
+    print(f"Loading problem information from {Constants.FILE_EXCEL_DATA}/{Constants.SHEET_INFO}...")
     # Update project constants if necessary
     if Constants.COURSES != courses:
         Constants.COURSES = courses
@@ -32,11 +39,19 @@ if __name__ == '__main__':
         Constants.HOUR_END_DAY = end_time
     # Load teacher information (name, availability during the week)
     teachers = loader.load_teachers(class_days, hours_per_day)
+    print(f"Loading teachers from {Constants.FILE_EXCEL_DATA}/{Constants.SHEET_TEACHER_INFO}...")
+
     # Load classes (name, list of teachers teach this class)
     classes = loader.load_classes(teachers)
+    print(f"Loading classes from {Constants.FILE_EXCEL_DATA}/{Constants.SHEET_CLASS_TEACHERS_INFO}...")
+
     # Load courses (name, list of classes/course, hours per week);
     # the time information of the classes is also loaded here (hours per class in the given course)
     courses = loader.load_courses(classes)
+    print(f"Loading courses from {Constants.FILE_EXCEL_DATA}/{Constants.SHEET_COURSE_HOURS_INFO}...")
+
+    print(f"Launching genetic algorithm computation to find a possible timetable solution...")
+    print(f"Total generations to be computed: {Constants.MAXIMUM_GENERATIONS}\n")
 
     geneticAlgorithm = GeneticAlgorithm(courses, classes, teachers)
     # Define the parent selection algorithm
@@ -50,5 +65,11 @@ if __name__ == '__main__':
     writer.write_timetable(solution, f"{parent_selection_type.name}_{now.strftime('%d_%m_%Y-%H_%M_%S')}")
     # Write the cost evolution over the different iterations
     writer.write_evolution(cost_evolution, constraints_evolution, generation_cost_evolution, f"{parent_selection_type.name}_{now.strftime('%d_%m_%Y-%H_%M_%S')}")
+
+    # Graphs
+    visualizer = Graphs("Roulette selection", cost_evolution, generation_cost_evolution, constraints_evolution)
+    visualizer.best_ind_plot()
+    visualizer.generation_cost_plot()
+    visualizer.best_ind_constraints_plot()
 
     print(f"Done! Computed timetables can be found in file {Constants.FILE_EXCEL_RESULTS} and cost evolution in file {Constants.FILE_EXCEL_EVOLUTION}.")
