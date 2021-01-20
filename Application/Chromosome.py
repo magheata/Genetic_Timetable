@@ -16,7 +16,11 @@ from copy import deepcopy
 import Constants
 import numpy as np
 import pandas as pd
+import random
 
+from copy import deepcopy
+
+import Constants
 from Domain.Class import Lesson
 
 
