@@ -5,7 +5,7 @@ FILE_EXCEL_RESULTS = "resultados_horarios.xls"
 FILE_EXCEL_EVOLUTION = "evolucion_costes.xls"
 
 SHEET_INFO = "info"
-SHEET_TEACHER_INFO = "teacher_hours"
+SHEET_TEACHER_INFO = "teacher_hours_hard"
 SHEET_CLASS_TEACHERS_INFO = "class_teachers"
 SHEET_COURSE_HOURS_INFO = "course_hours"
 
@@ -24,7 +24,7 @@ MAXIMUM_GENERATIONS = 1
 TOTAL_PARENTS = 10
 POPULATION_SIZE = 30
 DESCENDANTS = 10
-MUTATION = 0.15
+MUTATION = 0.35
 
 HCW = 1000
 SCW = 5

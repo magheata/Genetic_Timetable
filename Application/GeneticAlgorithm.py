@@ -310,7 +310,7 @@ class GeneticAlgorithm:
                                                            best_individual_constraints_evolution,
                                                            generation_cost_evolution)
             print(
-                f"Best individual: {generation[0].cost} generation: {generation[0].generation}/{Constants.MAXIMUM_GENERATIONS} individual: {generation[0].idx} "
+                f"Best individual: {generation[0].cost} generation: {generation[0].generation + 1}/{Constants.MAXIMUM_GENERATIONS} individual: {generation[0].idx} "
                 f"constraints: {generation[0].cost_constraints}\n"
                 f"Fitness generation: {fitness_generation}")
             self.improvement = (old_fitness - fitness_generation) / old_fitness
