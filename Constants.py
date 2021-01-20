@@ -20,7 +20,7 @@ HOUR_END_DAY = 15
 
 TIME_SLOTS = HOURS_PER_DAY * DAYS_PER_WEEK
 
-MAXIMUM_GENERATIONS = 500
+MAXIMUM_GENERATIONS = 1
 TOTAL_PARENTS = 10
 
 BASE = 1.5
@@ -33,7 +33,13 @@ DESCENDANTS = 10
 
 CONSTRAINTS = ["H1", "H5", "S1", "S2", "S3", "S4", "S5"]
 
+GRAPH_BEST_INDIVIDUAL = "BestIndPlot.jpeg"
+GRAPH_GENERATION = "GenerationCostPlot.jpeg"
+GRAPH_CONSTRAINT_EVOLUTION = "ConstraintsEvolution.jpeg"
+
+DIR_GRAPH_RESULTS = "Graph_Results"
 
 class Parent_Selection_Type(enum.Enum):
     ROULETTE = 1,
     TOURNAMENT = 2
+
