@@ -76,6 +76,7 @@ if __name__ == '__main__':
     visualizer = Graphs("Roulette selection", cost_evolution, generation_cost_evolution, constraints_evolution, file_name)
     visualizer.best_ind_plot()
     visualizer.generation_cost_plot()
-    visualizer.best_ind_constraints_plot()
+    for c in Constants.CONSTRAINTS:
+        visualizer.constraints_plot(c)
 
     print(f"Done! Computed timetables can be found in file {Constants.FILE_EXCEL_RESULTS} and cost evolution in file {Constants.FILE_EXCEL_EVOLUTION}.")
