@@ -29,7 +29,7 @@ class GeneticAlgorithm:
         self.teachers = teachers
         self.population_size = Constants.POPULATION_SIZE
         # Probability of an individual to mutate
-        self.mutation = 0.15
+        self.mutation = Constants.MUTATION
         self.improvement = 1
         self.fitness = Fitness()
 
