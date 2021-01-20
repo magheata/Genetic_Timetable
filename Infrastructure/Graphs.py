@@ -76,6 +76,7 @@ class Graphs():
         ax[3, 0].set_xlabel("Iterations")
         ax[3, 0].set_ylabel("Cost")
 
+
         ax[3, 1].remove()
         # Set output
         fig.tight_layout()
