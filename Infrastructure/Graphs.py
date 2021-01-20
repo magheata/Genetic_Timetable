@@ -30,6 +30,8 @@ class Graphs():
 
     def best_ind_plot(self, file_name=Constants.GRAPH_BEST_INDIVIDUAL):
         plt.figure(1)
+        axes = plt.gca()
+        axes.set_ylim([0,np.max(self.best_ind_evolution)])
         plt.plot(self.best_ind_evolution)
         plt.xlabel("Iteration")
         plt.ylabel("Individual Cost")
@@ -37,48 +39,12 @@ class Graphs():
         plt.savefig(f"{Constants.DIR_GRAPH_RESULTS}/{self.folder_name}/{file_name}")
         plt.show(block=False)
 
-    def best_ind_constraints_plot(self, file_name=Constants.GRAPH_CONSTRAINT_EVOLUTION):
-        fig, ax = plt.subplots(nrows=4, ncols=2, figsize=(15, 15))
-        # Hard constraints
-        ax[0, 0].set_title("Hard Const. 1")
-        ax[0, 0].plot(np.array(self.best_ind_constraints_evolution['H1']), color='r')
-        ax[0, 0].set_xlabel("Iterations")
-        ax[0, 0].set_ylabel("Cost")
-
-        ax[0, 1].set_title("Hard Const. 5")
-        ax[0, 1].plot(np.array(self.best_ind_constraints_evolution['H5']), color='r')
-        ax[0, 1].set_xlabel("Iterations")
-        ax[0, 1].set_ylabel("Cost")
-
-        # Soft constraints
-        ax[1, 0].set_title("Soft Const. 1")
-        ax[1, 0].plot(np.array(self.best_ind_constraints_evolution['S1']), color='g')
-        ax[1, 0].set_xlabel("Iterations")
-        ax[1, 0].set_ylabel("Cost")
-
-        ax[1, 1].set_title("Soft Const. 2")
-        ax[1, 1].plot(np.array(self.best_ind_constraints_evolution['S2']), color='g')
-        ax[1, 1].set_xlabel("Iterations")
-        ax[1, 1].set_ylabel("Cost")
-
-        ax[2, 0].set_title("Soft Const. 3")
-        ax[2, 0].plot(np.array(self.best_ind_constraints_evolution['S3']), color='g')
-        ax[2, 0].set_xlabel("Iterations")
-        ax[2, 0].set_ylabel("Cost")
-
-        ax[2, 1].set_title("Soft Const. 4")
-        ax[2, 1].plot(np.array(self.best_ind_constraints_evolution['S4']), color='g')
-        ax[2, 1].set_xlabel("Iterations")
-        ax[2, 1].set_ylabel("Cost")
-
-        ax[3, 0].set_title("Soft Const. 5")
-        ax[3, 0].plot(np.array(self.best_ind_constraints_evolution['S5']), color='g')
-        ax[3, 0].set_xlabel("Iterations")
-        ax[3, 0].set_ylabel("Cost")
-
-
-        ax[3, 1].remove()
-        # Set output
-        fig.tight_layout()
-        fig.savefig(f"{Constants.DIR_GRAPH_RESULTS}/{self.folder_name}/{file_name}")
+    def constraints_plot(self, constraint : str, file_name=Constants.GRAPH_CONSTRAINT_EVOLUTION):
+        plt.figure(1)
+        plt.plot(np.array(self.best_ind_constraints_evolution[constraint]))
+        plt.xlabel("Iteration")
+        plt.ylabel(f"{constraint} Cost")
+        plt.title(f"Best individual's {constraint} over iterations. {self.name}")
+        file_name = constraint + file_name
+        plt.savefig(f"{Constants.DIR_GRAPH_RESULTS}/{self.folder_name}/{file_name}")
         plt.show(block=False)
