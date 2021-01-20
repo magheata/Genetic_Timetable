@@ -4,6 +4,8 @@
 # @Email   : miruna.gheata1@estudiant.uib.cat
 # @File    : Main.py
 # @Software: PyCharm
+import os
+
 import Constants
 from Application.GeneticAlgorithm import GeneticAlgorithm
 from Infrastructure.Loader import Loader
@@ -61,15 +63,20 @@ if __name__ == '__main__':
     # Initialize writer to save the results in an Excel file
     writer = Writer()
     now = datetime.now()
+    file_name = f"{parent_selection_type.name}_{Constants.MUTATION}_{now.strftime('%d_%m_%Y-%H_%M')}"
     # Write the resulting timetables (each column represents one specific course)
-    writer.write_timetable(solution, f"{parent_selection_type.name}_{now.strftime('%d_%m_%Y-%H_%M_%S')}")
+    writer.write_timetable(solution, file_name)
     # Write the cost evolution over the different iterations
-    writer.write_evolution(cost_evolution, constraints_evolution, generation_cost_evolution, f"{parent_selection_type.name}_{now.strftime('%d_%m_%Y-%H_%M_%S')}")
+    writer.write_evolution(cost_evolution, constraints_evolution, generation_cost_evolution, file_name)
 
     # Graphs
-    visualizer = Graphs("Roulette selection", cost_evolution, generation_cost_evolution, constraints_evolution)
+    if not os.path.exists(Constants.DIR_GRAPH_RESULTS):
+        os.mkdir(Constants.DIR_GRAPH_RESULTS)
+
+    visualizer = Graphs("Roulette selection", cost_evolution, generation_cost_evolution, constraints_evolution, file_name)
     visualizer.best_ind_plot()
     visualizer.generation_cost_plot()
-    visualizer.best_ind_constraints_plot()
+    for c in Constants.CONSTRAINTS:
+        visualizer.constraints_plot(c)
 
     print(f"Done! Computed timetables can be found in file {Constants.FILE_EXCEL_RESULTS} and cost evolution in file {Constants.FILE_EXCEL_EVOLUTION}.")

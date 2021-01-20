@@ -23,4 +23,8 @@
   * Añadir clases especiales/avanzadas con asignaturas troncales
   con las clases normales.
 ### DOCUMENTACIÓN
-- [ ] Hacer memoria  
+- [ ] Hacer memoria
+
+- [] 200 generaciones / 500 generaciones
+- [] ROULETTE / TOURNAMENT
+- [] Mutación 0.01, 0.15, 0.35
