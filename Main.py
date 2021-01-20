@@ -12,10 +12,6 @@ from datetime import datetime
 
 from Infrastructure.Writer import Writer
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
 if __name__ == '__main__':
     # Create Loader element to load the data from the Excel files
     loader = Loader()
@@ -23,6 +19,7 @@ if __name__ == '__main__':
     # hours per day, first hour of class day, las hour of
     # class day)
     courses, class_days, hours_per_day, start_time, end_time = loader.load_timetable_info()
+    print(f"Loading problem information from {Constants.FILE_EXCEL_DATA}/{Constants.SHEET_INFO}...")
     # Update project constants if necessary
     if Constants.COURSES != courses:
         Constants.COURSES = courses
@@ -36,11 +33,20 @@ if __name__ == '__main__':
         Constants.HOUR_END_DAY = end_time
     # Load teacher information (name, availability during the week)
     teachers = loader.load_teachers(class_days, hours_per_day)
+    print(f"Loading teachers from {Constants.FILE_EXCEL_DATA}/{Constants.SHEET_TEACHER_INFO}...")
+
     # Load classes (name, list of teachers teach this class)
     classes = loader.load_classes(teachers)
+    print(f"Loading classes from {Constants.FILE_EXCEL_DATA}/{Constants.SHEET_CLASS_TEACHERS_INFO}...")
+
     # Load courses (name, list of classes/course, hours per week);
     # the time information of the classes is also loaded here (hours per class in the given course)
     courses = loader.load_courses(classes)
+    print(f"Loading courses from {Constants.FILE_EXCEL_DATA}/{Constants.SHEET_COURSE_HOURS_INFO}...")
+
+    print(f"Launching genetic algorithm computation to find a possible timetable solution...")
+    print(f"Total generations to be computed: {Constants.MAXIMUM_GENERATIONS}\n")
+
 
     geneticAlgorithm = GeneticAlgorithm(courses, classes, teachers)
     # Define the parent selection algorithm
