@@ -1,17 +1,20 @@
 import Constants
-from Application.Chromosome import Chromosome
+from Application.GeneticAlgorithm import GeneticAlgorithm
 from Infrastructure.Loader import Loader
-import pprint
+from datetime import datetime
 
+from Infrastructure.Writer import Writer
+from Infrastructure.Graphs import Graphs
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # Create Loader element to load the data from the Excel file
     loader = Loader()
     # Load timetable information (total days with classes,
     # hours per day, first hour of class day, las hour of
     # class day)
-    class_days, hours_per_day, start_time, end_time = loader.load_timetable_info()
+    courses, class_days, hours_per_day, start_time, end_time = loader.load_timetable_info()
+    if Constants.COURSES != courses:
+        Constants.COURSES = courses
     if Constants.HOURS_PER_DAY != hours_per_day:
         Constants.HOURS_PER_DAY = hours_per_day
     if Constants.DAYS_PER_WEEK != class_days:
@@ -29,8 +32,18 @@ if __name__ == '__main__':
     # the time information of the classes is also loaded here
     # (hours per class in the given course)
     courses = loader.load_courses(classes)
-    #print(pprint.pformat(courses['2BATX']))
 
-    chromosome = Chromosome(courses, teachers, class_days * hours_per_day)
+    geneticAlgorithm = GeneticAlgorithm(courses, classes, teachers)
+    solution, cost_evolution, constraints_evolution, generation_cost_evolution = geneticAlgorithm.find_solution()
+    writer = Writer()
+    now = datetime.now()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    writer.write_timetable(solution, now.strftime("%d_%m_%Y-%H_%M_%S"))
+    writer.write_evolution(cost_evolution, constraints_evolution, generation_cost_evolution, now.strftime("%d_%m_%Y-%H_%M_%S"))
+    
+    # Graphs
+    visualizer = Graphs("Roulette selection", cost_evolution, generation_cost_evolution, constraints_evolution)
+    visualizer.best_ind_plot()
+    visualizer.generation_cost_plot()
+    visualizer.best_ind_constraints_plot()
+    
