@@ -57,13 +57,13 @@ if __name__ == '__main__':
 
     geneticAlgorithm = GeneticAlgorithm(courses, classes, teachers)
     # Define the parent selection algorithm
-    parent_selection_type = Constants.Parent_Selection_Type.ROULETTE
+    parent_selection_type = Constants.Parent_Selection_Type.TOURNAMENT
     # Compute the timetable solution
     solution, cost_evolution, constraints_evolution, generation_cost_evolution = geneticAlgorithm.find_solution(parent_selection_type, True)
     # Initialize writer to save the results in an Excel file
     writer = Writer()
     now = datetime.now()
-    file_name = f"{parent_selection_type.name}_{Constants.MUTATION}_{now.strftime('%d_%m_%Y-%H_%M')}"
+    file_name = f"{parent_selection_type.name}_{Constants.MUTATION}_{now.strftime('%d_%m-%H_%M')}"
     # Write the resulting timetables (each column represents one specific course)
     writer.write_timetable(solution, file_name)
     # Write the cost evolution over the different iterations

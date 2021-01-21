@@ -31,7 +31,7 @@ class Graphs():
     def best_ind_plot(self, file_name=Constants.GRAPH_BEST_INDIVIDUAL):
         plt.figure(1)
         axes = plt.gca()
-        axes.set_ylim([0,np.max(self.best_ind_evolution)])
+        axes.set_ylim([0, np.max(self.best_ind_evolution)])
         plt.plot(self.best_ind_evolution)
         plt.xlabel("Iteration")
         plt.ylabel("Individual Cost")
@@ -39,7 +39,7 @@ class Graphs():
         plt.savefig(f"{Constants.DIR_GRAPH_RESULTS}/{self.folder_name}/{file_name}")
         plt.show(block=False)
 
-    def constraints_plot(self, constraint : str, file_name=Constants.GRAPH_CONSTRAINT_EVOLUTION):
+    def constraints_plot(self, constraint: str, file_name=Constants.GRAPH_CONSTRAINT_EVOLUTION):
         plt.figure(1)
         plt.plot(np.array(self.best_ind_constraints_evolution[constraint]))
         plt.xlabel("Iteration")
