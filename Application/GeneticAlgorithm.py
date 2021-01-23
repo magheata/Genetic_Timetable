@@ -315,7 +315,6 @@ class GeneticAlgorithm:
                 f"Fitness generation: {fitness_generation}")
             self.improvement = (old_fitness - fitness_generation) / old_fitness
 
-
             if use_random_individual:
                 if self.improvement == 0:
                     generations_with_no_improvement += 1
