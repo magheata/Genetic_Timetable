@@ -15,7 +15,7 @@
 ### DATOS
 - [X] Definir las restricciones del problema
 - [X] Crear dataset grande 
-- [ ] Crear dataset casos especiales
+- [X] Crear dataset casos especiales
 - [X] Proponer modificación del algoritmo (nuevo operador de mutación o
   recombinación, nueva estrategia de selección de individuos, etc.) Ideas:
   * Añadir lista de asignaturas optativas.
@@ -23,8 +23,8 @@
   * Añadir clases especiales/avanzadas con asignaturas troncales
   con las clases normales.
 ### DOCUMENTACIÓN
-- [ ] Hacer memoria
+- [X] Hacer memoria
 
-- [] 200 generaciones / 500 generaciones
-- [] ROULETTE / TOURNAMENT
-- [] Mutación 0.01, 0.15, 0.35
+- [X] 200 generaciones / 500 generaciones
+- [X] ROULETTE / TOURNAMENT
+- [X] Mutación 0.01, 0.15, 0.35
